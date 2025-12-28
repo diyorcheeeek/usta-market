@@ -9,8 +9,8 @@
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      background: #ffffff;
-      color: #111827;
+      background: #F3F4F6;
+      padding-bottom: 70px;
     }
 
     .header {
@@ -21,47 +21,70 @@
       font-size: 18px;
     }
 
-    .section {
-      padding: 12px 12px 0;
+    .category-title {
+      padding: 12px;
       font-weight: 700;
       color: #374151;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 12px 12px;
     }
 
     .card {
-      background: #F9FAFB;
-      margin: 10px 12px;
-      padding: 14px;
+      background: #FFFFFF;
       border-radius: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .product-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
+      min-height: 36px;
     }
 
     .price {
       color: #CA8A04;
       font-weight: 700;
-      margin-top: 4px;
+      margin: 6px 0;
     }
 
-    button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 12px;
+    .add-btn {
       background: #FFD400;
       border: none;
-      border-radius: 12px;
-      font-size: 15px;
+      border-radius: 10px;
+      padding: 8px;
       font-weight: 700;
+      font-size: 14px;
     }
 
-    button:active {
-      transform: scale(0.98);
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+
+    .nav-item {
+      font-size: 12px;
+      text-align: center;
+      color: #374151;
+    }
+
+    .nav-item span {
+      display: block;
+      font-size: 20px;
     }
   </style>
 </head>
@@ -69,42 +92,61 @@
 <body>
 
   <div class="header">USTA Market</div>
-  <div id="catalog"></div>
+
+  <!-- Хозтовары -->
+  <div class="category-title">🧽 Хозтовары</div>
+  <div class="grid">
+    <div class="card">
+      <div class="product-name">Губка для посуды</div>
+      <div class="price">5 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+
+    <div class="card">
+      <div class="product-name">Моющее средство</div>
+      <div class="price">12 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+  <!-- Стройматериалы -->
+  <div class="category-title">🧱 Стройматериалы</div>
+  <div class="grid">
+    <div class="card">
+      <div class="product-name">Цемент 50 кг</div>
+      <div class="price">65 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+  <!-- Инструменты -->
+  <div class="category-title">🔧 Инструменты</div>
+  <div class="grid">
+    <div class="card">
+      <div class="product-name">Молоток</div>
+      <div class="price">35 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+  <!-- Нижнее меню -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <span>🧱</span>
+      Каталог
+    </div>
+    <div class="nav-item">
+      <span>🛒</span>
+      Корзина
+    </div>
+    <div class="nav-item">
+      <span>👤</span>
+      Профиль
+    </div>
+  </div>
 
   <script>
     Telegram.WebApp.ready();
-
-    const products = [
-      { name: "Губка для посуды", price: 5000, category: "🧽 Хозтовары" },
-      { name: "Моющее средство", price: 12000, category: "🧽 Хозтовары" },
-      { name: "Цемент 50 кг", price: 65000, category: "🧱 Стройматериалы" },
-      { name: "Молоток", price: 35000, category: "🔧 Инструменты" },
-    ];
-
-    const catalog = document.getElementById("catalog");
-    const categories = [...new Set(products.map(p => p.category))];
-
-    categories.forEach(cat => {
-      const section = document.createElement("div");
-      section.className = "section";
-      section.innerText = cat;
-      catalog.appendChild(section);
-
-      products.filter(p => p.category === cat).forEach(p => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <div class="product-name">${p.name}</div>
-          <div class="price">${p.price.toLocaleString()} сум</div>
-          <button onclick="addToCart('${p.name}')">＋ В корзину</button>
-        `;
-        catalog.appendChild(card);
-      });
-    });
-
-    function addToCart(name) {
-      Telegram.WebApp.showAlert(`"${name}" добавлен в корзину`);
-    }
   </script>
 
 </body>
