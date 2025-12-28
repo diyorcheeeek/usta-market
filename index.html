@@ -1,170 +1,71 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>USTA Market</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      background: #F3F4F6;
-      padding-bottom: 110px;
-      color: #111827;
-    }
-
-    /* HEADER */
-    .header-wrapper {
-      background: #FFD400;
-      padding-top: 24px;
-      padding-bottom: 16px;
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 18px;
-    }
-
-    .header {
-      text-align: center;
-      font-weight: 900;
-      font-size: 24px;
-    }
-
-    /* CATEGORY */
-    .category {
-      background: #FFFFFF;
-      margin: 18px 12px;
-      padding: 20px;
-      border-radius: 18px;
-      font-weight: 700;
-      font-size: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    .category span {
-      font-size: 26px;
-    }
-
-    /* PRODUCTS */
-    .products {
-      display: none;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      padding: 0 12px 12px;
-    }
-
-    .card {
-      background: #FFFFFF;
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .product-img {
-      width: 100%;
-      height: 125px;
-      object-fit: cover;
-      border-radius: 14px;
-    }
-
-    .product-name {
-      font-size: 15px;
-      font-weight: 600;
-      margin-top: 10px;
-      min-height: 42px;
-    }
-
-    .price {
-      color: #CA8A04;
-      font-weight: 800;
-      font-size: 15px;
-      margin: 6px 0;
-    }
-
-    .add-btn {
-      margin-top: auto;
-      background: #FFD400;
-      border: none;
-      border-radius: 14px;
-      padding: 14px;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #FFFFFF;
-      border-top: 1px solid #E5E7EB;
-      display: flex;
-      justify-content: space-around;
-      padding: 18px 0 28px;
-    }
-
-    .nav-item {
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .nav-item span {
-      display: block;
-      font-size: 30px;
-      margin-bottom: 6px;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- HEADER -->
-  <div class="header-wrapper">
-    <div class="header">USTA Market</div>
-  </div>
-
-  <!-- ХОЗТОВАРЫ -->
-  <div class="category" onclick="toggle('c1')">
-    🧽 Хозтовары <span>⌄</span>
-  </div>
-  <div id="c1" class="products">
-    <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952">
-      <div class="product-name">Губка для посуды</div>
-      <div class="price">5 000 сум</div>
-      <button class="add-btn">В корзину</button>
-    </div>
-    <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1583947215259-38e31be8751f">
-      <div class="product-name">Моющее средство</div>
-      <div class="price">12 000 сум</div>
-      <button class="add-btn">В корзину</button>
-    </div>
-    <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1585421514738-01798e348b17">
-      <div class="product-name">Салфетки для уборки</div>
-      <div class="price">8 000 сум</div>
-      <button class="add-btn">В корзину</button>
-    </div>
-  </div>
-
-  <!-- СТРОЙМАТЕРИАЛЫ -->
-  <div class="category" onclick="toggle('c2')">
-    🧱 Стройматериалы <span>⌄</span>
-  </div>
-  <div id="c2" class="products">
-    <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d">
+<img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d">
       <div class="product-name">Цемент 50 кг</div>
       <div class="price">65 000 сум</div>
       <button class="add-btn">В корзину</button>
     </div>
     <div class="card">
       <img class="product-img" src="https://images.unsplash.com/photo-1616627988047-3b2e6bb5d3f5">
+      <div class="product-name">Кирпич строительный</div>
+      <div class="price">1 200 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1590086782792-42dd2350140d">
+      <div class="product-name">Шпаклёвка</div>
+      <div class="price">28 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+  <!-- ИНСТРУМЕНТЫ -->
+  <div class="category" onclick="toggle('c3')">
+    🔧 Инструменты <span>⌄</span>
+  </div>
+  <div id="c3" class="products">
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8">
+      <div class="product-name">Молоток</div>
+      <div class="price">35 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1590080877777-8a4b8f8a6c0d">
+      <div class="product-name">Отвёртка</div>
+      <div class="price">18 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1597008641621-1d2b6c0f0f9a">
+      <div class="product-name">Рулетка 5 м</div>
+      <div class="price">22 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <span>🏬</span>
+      Каталог
+    </div>
+    <div class="nav-item">
+      <span>🛒</span>
+      Корзина
+    </div>
+    <div class="nav-item">
+      <span>👤</span>
+      Профиль
+    </div>
+  </div>
+
+  <script>
+    Telegram.WebApp.ready();
+
+    function toggle(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === "grid" ? "none" : "grid";
+    }
+  </script>
+
+</body>
+</html>
