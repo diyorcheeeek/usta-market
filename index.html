@@ -8,32 +8,47 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       background: #ffffff;
+      color: #111827;
     }
+
     .header {
       background: #FFD400;
-      padding: 16px;
-      font-weight: bold;
+      padding: 14px;
       text-align: center;
+      font-weight: 700;
       font-size: 18px;
     }
-    .category {
-      margin: 12px;
-      font-weight: bold;
-      color: #4B5563;
+
+    .section {
+      padding: 12px 12px 0;
+      font-weight: 700;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
     .card {
-      margin: 12px;
+      background: #F9FAFB;
+      margin: 10px 12px;
       padding: 14px;
-      border-radius: 12px;
-      background: #f3f4f6;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
+
+    .product-name {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
     .price {
-      color: #eab308;
-      font-weight: bold;
-      margin-top: 6px;
+      color: #CA8A04;
+      font-weight: 700;
+      margin-top: 4px;
     }
+
     button {
       margin-top: 10px;
       width: 100%;
@@ -41,8 +56,12 @@
       background: #FFD400;
       border: none;
       border-radius: 12px;
-      font-weight: bold;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
@@ -50,48 +69,43 @@
 <body>
 
   <div class="header">USTA Market</div>
-
   <div id="catalog"></div>
 
   <script>
     Telegram.WebApp.ready();
 
     const products = [
-      { id: 1, name: "Губка для посуды", price: 5000, category: "Хозтовары" },
-      { id: 2, name: "Моющее средство", price: 12000, category: "Хозтовары" },
-      { id: 3, name: "Цемент 50 кг", price: 65000, category: "Стройматериалы" },
-      { id: 4, name: "Молоток", price: 35000, category: "Инструменты" },
+      { name: "Губка для посуды", price: 5000, category: "🧽 Хозтовары" },
+      { name: "Моющее средство", price: 12000, category: "🧽 Хозтовары" },
+      { name: "Цемент 50 кг", price: 65000, category: "🧱 Стройматериалы" },
+      { name: "Молоток", price: 35000, category: "🔧 Инструменты" },
     ];
 
     const catalog = document.getElementById("catalog");
-
     const categories = [...new Set(products.map(p => p.category))];
 
     categories.forEach(cat => {
-      const title = document.createElement("div");
-      title.className = "category";
-      title.innerText = cat;
-      catalog.appendChild(title);
+      const section = document.createElement("div");
+      section.className = "section";
+      section.innerText = cat;
+      catalog.appendChild(section);
 
-      products
-        .filter(p => p.category === cat)
-        .forEach(p => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <div>${p.name}</div>
-            <div class="price">${p.price.toLocaleString()} сум</div>
-            <button onclick="addToCart('${p.name}')">➕ В корзину</button>
-          `;
-          catalog.appendChild(card);
-        });
+      products.filter(p => p.category === cat).forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="product-name">${p.name}</div>
+          <div class="price">${p.price.toLocaleString()} сум</div>
+          <button onclick="addToCart('${p.name}')">＋ В корзину</button>
+        `;
+        catalog.appendChild(card);
+      });
     });
 
     function addToCart(name) {
-      Telegram.WebApp.showAlert(`Товар "${name}" добавлен в корзину`);
+      Telegram.WebApp.showAlert(`"${name}" добавлен в корзину`);
     }
   </script>
 
 </body>
 </html>
-
