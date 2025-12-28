@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>USTA Market</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -15,43 +16,79 @@
       padding: 16px;
       font-weight: bold;
       text-align: center;
+      font-size: 18px;
+    }
+    .category {
+      margin: 12px;
+      font-weight: bold;
+      color: #4B5563;
     }
     .card {
-      margin: 16px;
-      padding: 16px;
+      margin: 12px;
+      padding: 14px;
       border-radius: 12px;
       background: #f3f4f6;
     }
+    .price {
+      color: #eab308;
+      font-weight: bold;
+      margin-top: 6px;
+    }
     button {
+      margin-top: 10px;
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       background: #FFD400;
       border: none;
       border-radius: 12px;
-      font-size: 16px;
       font-weight: bold;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
 
   <div class="header">USTA Market</div>
 
-  <div class="card">
-    👋 Привет, <span id="name"></span>
-  </div>
-
-  <div class="card">
-    <button>🛒 Каталог (скоро)</button>
-  </div>
+  <div id="catalog"></div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+    Telegram.WebApp.ready();
 
-    const user = tg.initDataUnsafe.user;
-    if (user) {
-      document.getElementById("name").innerText = user.first_name;
+    const products = [
+      { id: 1, name: "Губка для посуды", price: 5000, category: "Хозтовары" },
+      { id: 2, name: "Моющее средство", price: 12000, category: "Хозтовары" },
+      { id: 3, name: "Цемент 50 кг", price: 65000, category: "Стройматериалы" },
+      { id: 4, name: "Молоток", price: 35000, category: "Инструменты" },
+    ];
+
+    const catalog = document.getElementById("catalog");
+
+    const categories = [...new Set(products.map(p => p.category))];
+
+    categories.forEach(cat => {
+      const title = document.createElement("div");
+      title.className = "category";
+      title.innerText = cat;
+      catalog.appendChild(title);
+
+      products
+        .filter(p => p.category === cat)
+        .forEach(p => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div>${p.name}</div>
+            <div class="price">${p.price.toLocaleString()} сум</div>
+            <button onclick="addToCart('${p.name}')">➕ В корзину</button>
+          `;
+          catalog.appendChild(card);
+        });
+    });
+
+    function addToCart(name) {
+      Telegram.WebApp.showAlert(`Товар "${name}" добавлен в корзину`);
     }
   </script>
 
