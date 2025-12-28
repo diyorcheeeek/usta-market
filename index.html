@@ -37,26 +37,35 @@
     .card {
       background: #FFFFFF;
       border-radius: 14px;
-      padding: 12px;
+      padding: 10px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #E5E7EB;
     }
 
     .product-name {
       font-size: 14px;
       font-weight: 600;
-      min-height: 36px;
+      margin-top: 8px;
+      min-height: 34px;
     }
 
     .price {
       color: #CA8A04;
       font-weight: 700;
-      margin: 6px 0;
+      margin: 4px 0;
     }
 
     .add-btn {
+      margin-top: auto;
       background: #FFD400;
       border: none;
       border-radius: 10px;
@@ -97,12 +106,14 @@
   <div class="category-title">🧽 Хозтовары</div>
   <div class="grid">
     <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952" />
       <div class="product-name">Губка для посуды</div>
       <div class="price">5 000 сум</div>
       <button class="add-btn">В корзину</button>
     </div>
 
     <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1583947215259-38e31be8751f" />
       <div class="product-name">Моющее средство</div>
       <div class="price">12 000 сум</div>
       <button class="add-btn">В корзину</button>
@@ -113,6 +124,7 @@
   <div class="category-title">🧱 Стройматериалы</div>
   <div class="grid">
     <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d" />
       <div class="product-name">Цемент 50 кг</div>
       <div class="price">65 000 сум</div>
       <button class="add-btn">В корзину</button>
@@ -123,6 +135,7 @@
   <div class="category-title">🔧 Инструменты</div>
   <div class="grid">
     <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8" />
       <div class="product-name">Молоток</div>
       <div class="price">35 000 сум</div>
       <button class="add-btn">В корзину</button>
