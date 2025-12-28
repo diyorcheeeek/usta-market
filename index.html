@@ -10,28 +10,42 @@
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       background: #F3F4F6;
-      padding-bottom: 70px;
+      padding-bottom: 90px;
     }
 
     .header {
       background: #FFD400;
-      padding: 14px;
+      padding: 16px;
       text-align: center;
       font-weight: 700;
       font-size: 18px;
     }
 
-    .category-title {
-      padding: 12px;
+    /* Категории */
+    .category {
+      background: #FFFFFF;
+      margin: 10px 12px;
+      padding: 14px;
+      border-radius: 14px;
       font-weight: 700;
-      color: #374151;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    .grid {
-      display: grid;
+    .category span {
+      font-size: 20px;
+    }
+
+    /* Товары */
+    .products {
+      display: none;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      padding: 0 12px 12px;
+      padding: 10px 12px 0;
     }
 
     .card {
@@ -48,7 +62,6 @@
       height: 110px;
       object-fit: cover;
       border-radius: 10px;
-      background: #E5E7EB;
     }
 
     .product-name {
@@ -74,6 +87,7 @@
       font-size: 14px;
     }
 
+    /* Bottom bar */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -82,18 +96,20 @@
       border-top: 1px solid #E5E7EB;
       display: flex;
       justify-content: space-around;
-      padding: 8px 0;
+      padding: 12px 0 18px;
     }
 
     .nav-item {
-      font-size: 12px;
       text-align: center;
+      font-size: 13px;
+      font-weight: 600;
       color: #374151;
     }
 
     .nav-item span {
       display: block;
-      font-size: 20px;
+      font-size: 26px;
+      margin-bottom: 4px;
     }
   </style>
 </head>
@@ -103,28 +119,32 @@
   <div class="header">USTA Market</div>
 
   <!-- Хозтовары -->
-  <div class="category-title">🧽 Хозтовары</div>
-  <div class="grid">
+  <div class="category" onclick="toggle('c1')">
+    🧽 Хозтовары <span>⌄</span>
+  </div>
+  <div id="c1" class="products">
     <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952" />
+      <img class="product-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952">
       <div class="product-name">Губка для посуды</div>
       <div class="price">5 000 сум</div>
       <button class="add-btn">В корзину</button>
     </div>
 
     <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1583947215259-38e31be8751f" />
+      <img class="product-img" src="https://images.unsplash.com/photo-1583947215259-38e31be8751f">
       <div class="product-name">Моющее средство</div>
       <div class="price">12 000 сум</div>
       <button class="add-btn">В корзину</button>
     </div>
   </div>
 
-  <!-- Стройматериалы -->
-  <div class="category-title">🧱 Стройматериалы</div>
-  <div class="grid">
+  <!-- Стройка -->
+  <div class="category" onclick="toggle('c2')">
+    🧱 Стройматериалы <span>⌄</span>
+  </div>
+  <div id="c2" class="products">
     <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d" />
+      <img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d">
       <div class="product-name">Цемент 50 кг</div>
       <div class="price">65 000 сум</div>
       <button class="add-btn">В корзину</button>
@@ -132,20 +152,22 @@
   </div>
 
   <!-- Инструменты -->
-  <div class="category-title">🔧 Инструменты</div>
-  <div class="grid">
+  <div class="category" onclick="toggle('c3')">
+    🔧 Инструменты <span>⌄</span>
+  </div>
+  <div id="c3" class="products">
     <div class="card">
-      <img class="product-img" src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8" />
+      <img class="product-img" src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8">
       <div class="product-name">Молоток</div>
       <div class="price">35 000 сум</div>
       <button class="add-btn">В корзину</button>
     </div>
   </div>
 
-  <!-- Нижнее меню -->
+  <!-- Bottom bar -->
   <div class="bottom-nav">
     <div class="nav-item">
-      <span>🧱</span>
+      <span>🏬</span>
       Каталог
     </div>
     <div class="nav-item">
@@ -154,13 +176,3 @@
     </div>
     <div class="nav-item">
       <span>👤</span>
-      Профиль
-    </div>
-  </div>
-
-  <script>
-    Telegram.WebApp.ready();
-  </script>
-
-</body>
-</html>
