@@ -1,4 +1,199 @@
-<img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- 🔒 FIX: запрет зума и системных жестов -->
+  <meta name="viewport"
+        content="width=device-width,
+                 initial-scale=1,
+                 maximum-scale=1,
+                 user-scalable=no">
+
+  <title>USTA Market</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: #F3F4F6;
+      padding-bottom: 170px; /* место под большой bottom bar */
+      color: #111827;
+      user-select: none;
+    }
+
+    /* ===== HEADER ===== */
+    .header-wrapper {
+      position: relative;
+      z-index: 2;
+      background: #FFD400;
+      padding-top: 28px;
+      padding-bottom: 18px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+    }
+
+    .header {
+      text-align: center;
+      font-weight: 900;
+      font-size: 26px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== CATEGORY BUTTON ===== */
+    .category {
+      position: relative;
+      z-index: 2;
+      background: #FFFFFF;
+      margin: 18px 12px;
+      padding: 22px;
+      border-radius: 18px;
+      font-weight: 800;
+      font-size: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .category span {
+      font-size: 28px;
+    }
+
+    /* ===== PRODUCTS GRID ===== */
+    .products {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 0 12px 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== PRODUCT CARD ===== */
+    .card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 🔒 FIX: картинки НЕ кликаются */
+    .product-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #E5E7EB;
+
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 10px;
+      min-height: 44px;
+    }
+
+    .price {
+      color: #CA8A04;
+      font-weight: 900;
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .add-btn {
+      margin-top: auto;
+      background: #FFD400;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .add-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border-top: 2px solid #E5E7EB;
+      display: flex;
+      justify-content: space-around;
+      padding: 28px 0 40px;
+      z-index: 999;
+    }
+
+    .nav-item {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .nav-item span {
+      display: block;
+      font-size: 44px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header-wrapper">
+    <div class="header">USTA Market</div>
+  </div>
+
+  <!-- ХОЗТОВАРЫ -->
+  <div class="category" onclick="toggle('c1')">
+    🧽 Хозтовары <span>⌄</span>
+  </div>
+  <div id="c1" class="products">
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952">
+      <div class="product-name">Губка для посуды</div>
+      <div class="price">5 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1583947215259-38e31be8751f">
+      <div class="product-name">Моющее средство</div>
+      <div class="price">12 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+    <div class="card"><
+       img class="product-img" src="https://images.unsplash.com/photo-1585421514738-01798e348b17">
+      <div class="product-name">Салфетки для уборки</div>
+      <div class="price">8 000 сум</div>
+      <button class="add-btn">В корзину</button>
+    </div>
+  </div>
+
+      <!-- СТРОЙМАТЕРИАЛЫ -->
+  <div class="category" onclick="toggle('c2')">
+    🧱 Стройматериалы <span>⌄</span>
+  </div>
+  <div id="c2" class="products">
+    <div class="card">
+      <img class="product-img" src="https://images.unsplash.com/photo-1607400201515-c2c41f5dfc8d">
       <div class="product-name">Цемент 50 кг</div>
       <div class="price">65 000 сум</div>
       <button class="add-btn">В корзину</button>
@@ -45,27 +240,20 @@
   <!-- BOTTOM BAR -->
   <div class="bottom-nav">
     <div class="nav-item">
-      <span>🏬</span>
-      Каталог
+      <span>🏬</span>Каталог
     </div>
     <div class="nav-item">
-      <span>🛒</span>
-      Корзина
+      <span>🛒</span>Корзина
     </div>
     <div class="nav-item">
-      <span>👤</span>
-      Профиль
+      <span>👤</span>Профиль
     </div>
   </div>
 
   <script>
     Telegram.WebApp.ready();
+    Telegram.WebApp.disableClosingConfirmation();
 
     function toggle(id) {
       const el = document.getElementById(id);
       el.style.display = el.style.display === "grid" ? "none" : "grid";
-    }
-  </script>
-
-</body>
-</html>
