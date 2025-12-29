@@ -175,7 +175,8 @@ function renderItems() {
 
   order.items.forEach((item, index) => {
     const tr = document.createElement('tr');
-    <td>
+
+    tr.innerHTML = `<td>
         <input
           type="text"
           placeholder="Начни вводить..."
@@ -291,5 +292,3 @@ navButtons.forEach(btn => {
 // START
 // ===============================
 renderOrder();
-
-    tr.innerHTML = `
