@@ -225,3 +225,6 @@ html, body {
 .bottom-bar .nav-btn.center.active::before {
   display: none !important;
 }
+.nav-btn.active {
+  background: red !important;
+}
