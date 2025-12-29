@@ -7,42 +7,38 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- TELEGRAM WEBAPP -->
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=9001">
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f3f4f6;
+    }
+    .header {
+      background: #fff;
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 1px 6px rgba(0,0,0,.1);
+    }
+    .content {
+      padding: 16px;
+    }
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body>
 
-<div id="app">
+  <div class="header" id="pageTitle">Загрузка…</div>
+  <div class="content" id="content"></div>
 
-  <header class="header">
-    <h1 id="pageTitle">Загрузка…</h1>
-  </header>
-
-  <main id="content" class="content"></main>
-
-  <nav class="bottom-bar">
-    <button class="nav-btn" data-screen="clients">
-      <div class="icon">👤</div>
-      <div class="label">Клиенты</div>
-    </button>
-
-    <button class="nav-btn center" data-screen="order">
-      <div class="icon">+</div>
-      <div class="label">Заказ</div>
-    </button>
-
-    <button class="nav-btn" data-screen="products">
-      <div class="icon">📦</div>
-      <div class="label">Товары</div>
-    </button>
-  </nav>
-
-</div>
-
-<!-- JS ТОЛЬКО В КОНЦЕ -->
-<script src="app.js?v=9999"></script>
+  <!-- JS СТРОГО В КОНЦЕ -->
+  <script src="app.js?v=FORCE1"></script>
 </body>
 </html>
-
