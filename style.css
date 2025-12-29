@@ -308,3 +308,53 @@ html, body {
 .bottom-bar .nav-btn.center .label {
   color: white;
 }
+/* ===== TELEGRAM COLOR OVERRIDE (FINAL FIX) ===== */
+
+/* НЕАКТИВНЫЕ ВКЛАДКИ — СЕРЫЕ */
+.bottom-bar .nav-btn .icon,
+.bottom-bar .nav-btn .label {
+  color: #9ca3af !important;
+  font-weight: 600 !important;
+}
+
+/* АКТИВНАЯ ВКЛАДКА — СИНЯЯ */
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
+  color: #2a7cff !important;
+  font-weight: 700 !important;
+}
+
+/* ОСНОВА ДЛЯ ПОДСВЕТКИ */
+.bottom-bar .nav-btn {
+  position: relative;
+}
+
+/* ЧЁТКИЙ, ЯРКИЙ, ЦЕНТРИРОВАННЫЙ КРУГ */
+.bottom-bar .nav-btn.active::before {
+  content: "";
+  position: absolute;
+
+  width: 42px;
+  height: 42px;
+
+  background: rgba(42,124,255,0.35) !important;
+  border-radius: 50%;
+
+  /* ЦЕНТР ПОД ИКОНКОЙ */
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  box-shadow: 0 6px 18px rgba(42,124,255,0.55) !important;
+  z-index: -1;
+}
+
+/* ЦЕНТРАЛЬНЫЙ + — БЕЗ ПОДСВЕТКИ */
+.bottom-bar .nav-btn.center::before {
+  display: none !important;
+}
+
+.bottom-bar .nav-btn.center .icon,
+.bottom-bar .nav-btn.center .label {
+  color: #ffffff !important;
+}
