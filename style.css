@@ -129,3 +129,37 @@ html, body {
   font-size: 9px;
   margin-top: 2px;
 }
+/* ================= ACTIVE TAB ================= */
+.nav-btn {
+  position: relative;
+}
+
+/* КРУГЛАЯ ПОДСВЕТКА */
+.nav-btn.active::before {
+  content: "";
+  position: absolute;
+
+  width: 44px;
+  height: 44px;
+
+  background: rgba(42,124,255,0.15);
+  border-radius: 50%;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  box-shadow: 0 4px 14px rgba(42,124,255,0.35);
+}
+
+/* ТЕКСТ И ИКОНКА АКТИВНОЙ */
+.nav-btn.active .icon,
+.nav-btn.active .label {
+  color: #2a7cff;
+  font-weight: 700;
+}
+
+/* НЕ ТРОГАЕМ ЦЕНТРАЛЬНУЮ КНОПКУ */
+.nav-btn.center::before {
+  display: none;
+}
