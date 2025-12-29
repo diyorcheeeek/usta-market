@@ -156,6 +156,35 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   }
 
-  /* ===== INIT ===== */
-  renderOrder();
+  /* ===== BOTTOM BAR NAV ===== */
+
+navButtons.forEach(btn => {
+  btn.onclick = () => {
+    haptic();
+
+    const screen = btn.dataset.screen;
+
+    // очищаем стек при переходе снизу
+    screenStack = [];
+
+    if (screen === 'order') {
+      renderOrder();
+    }
+
+    if (screen === 'clients') {
+      setHeader('Клиенты');
+      content.innerHTML = `
+        <div class="card">
+          <p>Экран клиентов (следующий шаг)</p>
+        </div>
+      `;
+    }
+
+    if (screen === 'products') {
+      renderProductsTable();
+    }
+  };
 });
+
+/* ===== INIT ===== */
+renderOrder();
