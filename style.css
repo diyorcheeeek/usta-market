@@ -5,124 +5,136 @@
 
 body {
   margin: 0;
-  background: #f5f6f8;
+  background: #f3f4f6;
 }
 
+/* HEADER */
 .header {
+  position: relative;
   background: white;
-  padding: 20px;
+  padding: 32px;
   text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-size: 34px;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
+.back-btn {
+  position: absolute;
+  left: 20px;
+  top: 30px;
+  font-size: 36px;
+  font-weight: 800;
+  background: none;
+  border: none;
+  color: #2a7cff;
+}
+
+/* CONTENT */
 .content {
-  padding: 16px;
-  padding-bottom: 90px;
+  padding: 28px;
+  padding-bottom: 260px;
+  animation: fadeUp 0.4s ease;
 }
 
+/* CARD */
 .card {
   background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 24px;
+  padding: 36px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .card.big {
-  padding: 24px;
+  padding: 48px;
 }
 
+/* BUTTON */
 .primary-btn {
   width: 100%;
-  padding: 18px;
-  font-size: 18px;
-  font-weight: 700;
+  padding: 36px;
+  font-size: 34px;
+  font-weight: 800;
   border: none;
-  border-radius: 12px;
+  border-radius: 20px;
   background: #2a7cff;
   color: white;
 }
 
-.secondary-btn {
-  width: 100%;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  background: #eef2ff;
-}
-
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 0;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-}
-
-.nav-btn {
-  font-size: 22px;
-  background: none;
-  border: none;
-}
-
-.nav-btn.active {
-  color: #2a7cff;
-}
-/* ANIMATIONS */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.content {
-  animation: fadeUp 0.4s ease;
-}
-
-/* FLOATING GLASS BAR */
+/* FLOATING BOTTOM BAR */
 .bottom-bar {
   position: fixed;
   bottom: 32px;
   left: 20px;
   right: 20px;
+
   height: 200px;
   padding: 24px;
+
   display: flex;
   gap: 12px;
   align-items: center;
+
   border-radius: 48px;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(20px);
+
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   z-index: 9999;
 }
 
+/* NAV BUTTONS */
 .nav-btn {
   flex: 1;
-  border: none;
   background: none;
+  border: none;
   text-align: center;
 }
 
-.nav-btn .icon { font-size: 64px; }
-.nav-btn .label { font-size: 24px; font-weight: 800; }
-
-.nav-btn.center {
-  background: #2a7cff;
-  color: #fff;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  margin-top: -80px;
-  box-shadow: 0 20px 50px rgba(42,124,255,0.6);
+.nav-btn .icon {
+  font-size: 64px;
 }
 
-.nav-btn.center .icon { font-size: 76px; }
-.nav-btn.center .label { font-size: 22px; }
+.nav-btn .label {
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+/* CENTER BUTTON */
+.nav-btn.center {
+  background: linear-gradient(135deg, #2a7cff, #1e5fd9);
+  color: white;
+
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+
+  margin-top: -90px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow:
+    0 20px 40px rgba(42,124,255,0.6),
+    inset 0 -4px 10px rgba(0,0,0,0.15);
+}
+
+.nav-btn.center .icon {
+  font-size: 88px;
+  line-height: 1;
+}
+
+.nav-btn.center .label {
+  margin-top: 6px;
+  font-size: 22px;
+}
+
+/* ANIMATION */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
