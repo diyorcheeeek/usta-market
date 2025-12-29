@@ -1,125 +1,56 @@
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Usta Market</title>
 
-/* отключаем зум */
-html, body {
-  margin: 0;
-  background: #f3f4f6;
-  touch-action: manipulation;
-  overscroll-behavior: none;
-}
+  <!-- ❌ ОТКЛЮЧЕНИЕ ZOOM -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
 
-/* ================= HEADER ================= */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  <!-- Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  height: 44px;               /* было 88 */
-  background: #ffffff;
+  <link rel="stylesheet" href="style.css?v=1" />
+</head>
+<body>
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+<div id="app">
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
+  <!-- HEADER -->
+  <header class="header">
+    <h1 id="pageTitle">Создание заказа</h1>
+  </header>
 
-#pageTitle {
-  font-size: 15px;            /* было 30 */
-  font-weight: 700;
-  margin: 0;
-}
+  <!-- CONTENT -->
+  <main class="content" id="content">
+    <div class="card">
+      <p>🧾 Здесь будет форма заказа</p>
+    </div>
+  </main>
 
-/* ================= CONTENT ================= */
-.content {
-  padding: 10px;              /* было 20 */
-  padding-bottom: 120px;      /* было 240 */
-}
+  <!-- FLOATING BOTTOM BAR -->
+  <nav class="bottom-bar">
+    <button class="nav-btn" data-screen="clients">
+      <div class="icon">🧑</div>
+      <div class="label">Клиенты</div>
+    </button>
 
-/* ================= CARD ================= */
-.card {
-  background: #ffffff;
-  border-radius: 11px;        /* было 22 */
-  padding: 14px;              /* было 28 */
+    <button class="nav-btn center" data-screen="order">
+      <div class="icon">+</div>
+      <div class="label">Заказ</div>
+    </button>
 
-  box-shadow: 0 5px 13px rgba(0,0,0,0.08);
-}
+    <button class="nav-btn" data-screen="products">
+      <div class="icon">📦</div>
+      <div class="label">Товары</div>
+    </button>
+  </nav>
 
-.card p {
-  font-size: 11px;            /* было 22 */
-  font-weight: 500;
-  line-height: 1.4;
-}
+</div>
 
-/* ================= BOTTOM BAR ================= */
-.bottom-bar {
-  position: fixed;
-  bottom: 11px;               /* было 22 */
-  left: 8px;
-  right: 8px;
-
-  height: 95px;               /* было 190 */
-  padding: 11px;              /* было 22 */
-
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  border-radius: 23px;        /* было 46 */
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-
-  box-shadow: 0 9px 25px rgba(0,0,0,0.28);
-  z-index: 20;
-}
-
-/* NAV BUTTONS */
-.nav-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  text-align: center;
-}
-
-.nav-btn .icon {
-  font-size: 28px;            /* было 56 */
-}
-
-.nav-btn .label {
-  margin-top: 3px;
-  font-size: 10px;            /* было 20 */
-  font-weight: 600;
-}
-
-/* CENTER BUTTON */
-.nav-btn.center {
-  width: 75px;                /* было 150 */
-  height: 75px;               /* было 150 */
-
-  background: linear-gradient(135deg, #2a7cff, #1e5fd9);
-  color: white;
-
-  border-radius: 50%;
-  margin-top: -40px;          /* было -80 */
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow:
-    0 10px 21px rgba(42,124,255,0.55),
-    inset 0 -3px 5px rgba(0,0,0,0.15);
-}
-
-.nav-btn.center .icon {
-  font-size: 39px;            /* было 78 */
-  line-height: 1;
-}
-
-.nav-btn.center .label {
-  font-size: 9px;             /* было 18 */
-}
+<script src="app.js?v=1"></script>
+</body>
+</html>
