@@ -1,58 +1,47 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Usta Market</title>
+/* ================= HEADER ================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
-  <!-- ❗ ОТКЛЮЧЕНИЕ МАСШТАБА -->
-  <meta
-    name="viewport"
-    content="width=device-width,
-             initial-scale=1.0,
-             maximum-scale=1.0,
-             user-scalable=no"
-  />
+  height: 120px;
+  background: white;
 
-  <!-- Telegram WebApp -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  display: flex;
+  align-items: center;
 
-  <link rel="stylesheet" href="style.css?v=3" />
-</head>
-<body>
+  padding: 0 24px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
 
-<div id="app">
+/* КНОПКА НАЗАД */
+.back-btn {
+  width: 64px;
+  height: 64px;
 
-  <!-- HEADER -->
-  <header class="header">
-  <button id="backBtn" class="back-btn" onclick="goBack()">←</button>
-  <div class="title-wrapper">
-    <h1 id="pageTitle">Создание заказа</h1>
-  </div>
-</header>
-  <!-- CONTENT -->
-  <main class="content" id="content"></main>
+  font-size: 48px;
+  font-weight: 900;
 
-  <!-- FLOATING BOTTOM BAR -->
-  <nav class="bottom-bar">
-    <button class="nav-btn" data-screen="clients">
-      <div class="icon">🧑</div>
-      <div class="label">Клиенты</div>
-    </button>
+  background: none;
+  border: none;
+  color: #2a7cff;
 
-    <button class="nav-btn center" data-screen="order">
-      <div class="icon">+</div>
-      <div class="label">Заказ</div>
-    </button>
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    <button class="nav-btn" data-screen="products">
-      <div class="icon">📦</div>
-      <div class="label">Товары</div>
-    </button>
-  </nav>
+/* ОБЁРТКА ЗАГОЛОВКА */
+.title-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
 
-</div>
-
-<script src="app.js?v=3"></script>
-</body>
-</html>
-
+/* ЗАГОЛОВОК */
+#pageTitle {
+  font-size: 44px;
+  font-weight: 900;
+  margin: 0;
+  white-space: nowrap;        /* ❗ НЕ ПЕРЕНОСИТСЯ */
+}
