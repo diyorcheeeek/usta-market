@@ -1,86 +1,53 @@
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
 
-html, body {
-  margin: 0;
-  background: #f3f4f6;
-  color: #111827;
-}
+  const content = document.getElementById('content');
+  const title = document.getElementById('pageTitle');
+  const buttons = document.querySelectorAll('.nav-btn');
 
-/* ===== HEADER ===== */
-.header {
-  height: 48px;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-}
+  function haptic() {
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.impactOccurred('light');
+    }
+  }
 
-#pageTitle {
-  font-size: 16px;
-  font-weight: 600;
-}
+  function render(screen) {
+    if (screen === 'order') {
+      title.innerText = 'Создание заказа';
+      content.innerHTML = `
+        <div class="card">
+          <p>🧾 Здесь будет форма заказа</p>
+        </div>
+      `;
+    }
 
-/* ===== CONTENT ===== */
-.content {
-  padding: 16px;
-  padding-bottom: 100px;
-}
+    if (screen === 'clients') {
+      title.innerText = 'Клиенты';
+      content.innerHTML = `
+        <div class="card">
+          <p>📋 Список клиентов</p>
+        </div>
+      `;
+    }
 
-.card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+    if (screen === 'products') {
+      title.innerText = 'Товары';
+      content.innerHTML = `
+        <div class="card">
+          <p>📦 Список товаров</p>
+        </div>
+      `;
+    }
+  }
 
-/* ===== BOTTOM BAR (STABLE) ===== */
-.bottom-bar {
-  position: fixed;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      haptic(); // ✅ ВИБРАЦИЯ ВЕРНУЛАСЬ
+      render(btn.dataset.screen);
+    });
+  });
 
-  height: 64px;
-  background: #ffffff;
-  border-radius: 18px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
-
-/* buttons */
-.nav-btn {
-  background: none;
-  border: none;
-  text-align: center;
-  color: #6b7280;
-}
-
-.nav-btn .icon {
-  font-size: 22px;
-}
-
-.nav-btn .label {
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-/* center button */
-.nav-btn.center {
-  background: #2563eb;
-  color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+  // init
+  render('order');
+});
