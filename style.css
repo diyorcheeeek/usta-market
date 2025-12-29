@@ -358,3 +358,27 @@ html, body {
 .bottom-bar .nav-btn.center .label {
   color: #ffffff !important;
 }
+/* ===== FIX CENTER PLUS ALWAYS BLUE ===== */
+
+/* УБИРАЕМ active ЭФФЕКТ У + */
+.bottom-bar .nav-btn.center.active {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15) !important;
+}
+
+/* ИКОНКА + — НЕ СИНЯЯ */
+.bottom-bar .nav-btn.center .icon {
+  color: #374151 !important;   /* тёмно-серый */
+}
+
+/* ТЕКСТ "Заказ" — НЕ СИНИЙ */
+.bottom-bar .nav-btn.center .label {
+  color: #374151 !important;
+  font-weight: 700;
+}
+
+/* НА ВСЯКИЙ СЛУЧАЙ — НИКАКОЙ ПОДСВЕТКИ */
+.bottom-bar .nav-btn.center::before,
+.bottom-bar .nav-btn.center .tab-bg {
+  display: none !important;
+}
