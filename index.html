@@ -34,15 +34,26 @@
     </main>
 
     <!-- BOTTOM BAR -->
-    <nav class="bottom-bar">
-      <button class="nav-btn active">➕</button>
-      <button class="nav-btn">🧑</button>
-      <button class="nav-btn">📦</button>
-      <button class="nav-btn">📑</button>
-    </nav>
+   <nav class="bottom-bar">
+  <button class="nav-btn" data-screen="clients">
+    <div class="icon">🧑</div>
+    <div class="label">Клиенты</div>
+  </button>
+
+  <button class="nav-btn center" data-screen="order">
+    <div class="icon">➕</div>
+    <div class="label">Заказ</div>
+  </button>
+
+  <button class="nav-btn" data-screen="products">
+    <div class="icon">📦</div>
+    <div class="label">Товары</div>
+  </button>
+</nav>
 
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
+
