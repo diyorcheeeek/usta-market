@@ -225,6 +225,37 @@ html, body {
 .bottom-bar .nav-btn.center.active::before {
   display: none !important;
 }
-.nav-btn.active {
-  background: red !important;
+/* ===== FINAL ACTIVE TAB HIGHLIGHT ===== */
+.bottom-bar .nav-btn {
+  position: relative;
+}
+
+/* ИДЕАЛЬНЫЙ КРУГ ПОД ИКОНКОЙ */
+.bottom-bar .nav-btn.active::before {
+  content: "";
+  position: absolute;
+
+  width: 34px;
+  height: 34px;
+
+  background: rgba(42,124,255,0.2);
+  border-radius: 50%;
+
+  top: 16px;                 /* центр под иконкой */
+  left: 50%;
+  transform: translateX(-50%);
+
+  box-shadow: 0 3px 10px rgba(42,124,255,0.35);
+}
+
+/* АКТИВНЫЙ ЦВЕТ */
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
+  color: #2a7cff;
+  font-weight: 700;
+}
+
+/* ЦЕНТРАЛЬНУЮ КНОПКУ + НЕ ПОДСВЕЧИВАЕМ */
+.bottom-bar .nav-btn.center::before {
+  display: none !important;
 }
