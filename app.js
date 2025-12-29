@@ -1,96 +1,77 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
+innerText = 'Клиенты';
+    const clients = getClients();
 
-  const title = document.getElementById('pageTitle');
-  const content = document.getElementById('content');
-  const navButtons = document.querySelectorAll('.nav-btn');
-
-  function haptic(type = 'light') {
-    if (tg?.HapticFeedback) {
-      tg.HapticFeedback.impactOccurred(type);
-    }
-  }
-
-  function setActive(btn) {
-    navButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  /* ===== SCREENS ===== */
-
-  function renderOrder() {
-    title.innerText = 'Создание заказа';
-    content.innerHTML = `
-      <div class="card">
-        <h3>Форма заказа</h3>
-
-        <button class="action-btn" id="clientBtn">👤 Выбрать клиента</button><br><br>
-        <button class="action-btn" id="productBtn">📦 Добавить товар</button><br><br>
-
-        <textarea placeholder="Комментарий к заказу"
-          style="width:100%;height:80px;padding:8px;border-radius:8px;"></textarea>
-
-        <br><br>
-        <b>Итого: 0 сум</b>
-        <br><br>
-
-        <button class="action-btn primary" id="submitBtn">Создать заказ</button>
-      </div>
-    `;
-
-    document.getElementById('clientBtn').onclick = () => {
-      haptic();
-      tg?.showAlert('Дальше будет выбор клиента');
-    };
-
-    document.getElementById('productBtn').onclick = () => {
-      haptic();
-      tg?.showAlert('Дальше будет добавление товаров');
-    };
-
-    document.getElementById('submitBtn').onclick = () => {
-      haptic('medium');
-      tg?.showAlert('Заказ создан (демо)');
-    };
-  }
-
-  function renderClients() {
-    title.innerText = 'Клиенты';
     content.innerHTML = `
       <div class="card">
         <h3>Клиенты</h3>
-        <p>Здесь будет список клиентов</p>
+
+        ${clients.map((c, i) => `
+          <div class="client-row" data-index="${i}">
+            👤 <b>${c.name}</b><br>📞 ${c.phone}
+          </div>
+        `).join('')}
+
+        <br>
+        <button class="action-btn primary" id="addClientBtn">
+          ➕ Добавить клиента
+        </button>
       </div>
     `;
+
+    document.querySelectorAll('.client-row').forEach(row => {
+      row.onclick = () => {
+        selectedClient = clients[row.dataset.index];
+        haptic();
+        renderOrder();
+        setActive(document.querySelector('[data-screen="order"]'));
+      };
+    });
+
+    document.getElementById('addClientBtn').onclick = () => {
+      haptic();
+      renderAddClient();
+    };
   }
 
-  function renderProducts() {
-    title.innerText = 'Товары';
+  function renderAddClient() {
+    title.innerText = 'Новый клиент';
     content.innerHTML = `
       <div class="card">
-        <h3>Товары</h3>
-        <p>Здесь будет список товаров</p>
+        <input id="name" placeholder="Имя" style="width:100%;margin-bottom:8px;">
+        <input id="phone" placeholder="Телефон" style="width:100%;margin-bottom:8px;">
+        <button class="action-btn primary" id="saveClientBtn">
+          Сохранить
+        </button>
       </div>
     `;
+
+    document.getElementById('saveClientBtn').onclick = () => {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !phone) return tg?.showAlert('Заполни поля');
+
+      const clients = getClients();
+      clients.push({ id: Date.now(), name, phone });
+      saveClients(clients);
+
+      haptic('medium');
+      renderClients();
+    };
   }
 
-  /* ===== NAVIGATION ===== */
+  /* ===== NAV ===== */
 
   navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       haptic();
       setActive(btn);
-
-      const screen = btn.dataset.screen;
-      if (screen === 'order') renderOrder();
-      if (screen === 'clients') renderClients();
-      if (screen === 'products') renderProducts();
-    });
+      if (btn.dataset.screen === 'order') renderOrder();
+      if (btn.dataset.screen === 'clients') renderClients();
+      if (btn.dataset.screen === 'products') renderProducts();
+    };
   });
 
   /* ===== INIT ===== */
-  const defaultBtn = document.querySelector('.nav-btn.center');
-  setActive(defaultBtn);
+  setActive(document.querySelector('.nav-btn.center'));
   renderOrder();
 });
