@@ -197,3 +197,31 @@ html, body {
 .nav-btn.center::before {
   display: none !important;
 }
+/* ===== FORCE ACTIVE TAB FIX ===== */
+.bottom-bar .nav-btn.active::before {
+  content: "";
+  position: absolute !important;
+
+  width: 36px !important;
+  height: 36px !important;
+
+  background: rgba(42,124,255,0.18) !important;
+  border-radius: 50% !important;
+
+  top: 18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  box-shadow: 0 3px 10px rgba(42,124,255,0.35) !important;
+  z-index: -1;
+}
+
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
+  color: #2a7cff !important;
+  font-weight: 700 !important;
+}
+
+.bottom-bar .nav-btn.center.active::before {
+  display: none !important;
+}
