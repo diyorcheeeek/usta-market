@@ -160,3 +160,27 @@ textarea {
   font-size: 15px;
   font-weight: 700;
 }
+/* ===== FIX BOTTOM BAR ===== */
+
+.bottom-bar {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  height: 64px;
+  background: #ffffff;
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  z-index: 1000; /* ⬅️ ВАЖНО */
+}
+
+/* чтобы контент не залезал под бар */
+.content {
+  padding-bottom: 100px;
+}
