@@ -84,3 +84,17 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+/* ===== CENTER PLUS NEUTRAL FIX ===== */
+
+/* + кнопка — НЕ активная, не синяя */
+.bottom-bar .nav-btn.center {
+  background: #e5e7eb;          /* светло-серый */
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+/* иконка и текст + */
+.bottom-bar .nav-btn.center .icon,
+.bottom-bar .nav-btn.center .label {
+  color: #374151;               /* тёмно-серый */
+  font-weight: 700;
+}
