@@ -6,85 +6,49 @@ document.addEventListener('DOMContentLoaded', () => {
   const title = document.getElementById('pageTitle');
   const buttons = document.querySelectorAll('.nav-btn');
 
-  function haptic(type = 'light') {
+  function haptic() {
     if (tg.HapticFeedback) {
-      tg.HapticFeedback.impactOccurred(type);
+      tg.HapticFeedback.impactOccurred('light');
     }
   }
 
-  /* ===== SCREENS ===== */
-
-  function renderOrderForm() {
+  function renderOrder() {
     title.innerText = 'Создание заказа';
-
     content.innerHTML = `
-      <div class="card form">
-
-        <div class="form-group">
-          <label>Клиент</label>
-          <button class="select-btn">Выбрать клиента</button>
-        </div>
-
-        <div class="form-group">
-          <label>Товары</label>
-          <div class="products-empty">Товары не добавлены</div>
-          <button class="add-btn">+ Добавить товар</button>
-        </div>
-
-        <div class="form-group">
-          <label>Комментарий</label>
-          <textarea placeholder="Комментарий к заказу"></textarea>
-        </div>
-
-        <div class="total">
-          <span>Итого:</span>
-          <strong>0 сум</strong>
-        </div>
-
-        <button class="submit-btn">Создать заказ</button>
-
+      <div class="card">
+        <b>ФОРМА ЗАКАЗА РАБОТАЕТ ✅</b><br><br>
+        Нажми кнопки — будет вибрация
+        <br><br>
+        <button id="testBtn">Тест вибрации</button>
       </div>
     `;
 
-    // handlers
-    content.querySelector('.select-btn').onclick = () => {
+    document.getElementById('testBtn').onclick = () => {
       haptic();
-      tg.showAlert('Следующий шаг — выбор клиента');
-    };
-
-    content.querySelector('.add-btn').onclick = () => {
-      haptic();
-      tg.showAlert('Следующий шаг — добавление товаров');
-    };
-
-    content.querySelector('.submit-btn').onclick = () => {
-      haptic('medium');
-      tg.showAlert('Заказ создан (демо)');
+      tg.showAlert('Вибрация есть 👍');
     };
   }
 
   function renderClients() {
     title.innerText = 'Клиенты';
-    content.innerHTML = <div class="card">Список клиентов</div>;
+    content.innerHTML = <div class="card">Экран клиентов</div>;
   }
 
   function renderProducts() {
     title.innerText = 'Товары';
-    content.innerHTML = <div class="card">Список товаров</div>;
+    content.innerHTML = <div class="card">Экран товаров</div>;
   }
 
-  /* ===== NAV ===== */
   buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       haptic();
       const screen = btn.dataset.screen;
-
-      if (screen === 'order') renderOrderForm();
+      if (screen === 'order') renderOrder();
       if (screen === 'clients') renderClients();
       if (screen === 'products') renderProducts();
-    });
+    };
   });
 
-  /* ===== INIT ===== */
-  renderOrderForm();
+  // INIT
+  renderOrder();
 });
