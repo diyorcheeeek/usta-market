@@ -1,190 +1,295 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
+// ===============================
+// TELEGRAM INIT
+// ===============================
+const tg = window.Telegram?.WebApp;
+tg?.ready();
 
-  const title = document.getElementById('pageTitle');
-  const content = document.getElementById('content');
-  const navButtons = document.querySelectorAll('.nav-btn');
+// ===============================
+// ELEMENTS
+// ===============================
+const title = document.getElementById('pageTitle');
+const content = document.getElementById('content');
+const navButtons = document.querySelectorAll('.nav-btn');
 
-  let selectedClient = null;
-  let orderItems = [];
-  let screenStack = [];
-  let currentScreen = 'order';
-
-  /* ===== HELPERS ===== */
-
-  function haptic(type = 'light') {
+// ===============================
+// SAFE HAPTIC
+// ===============================
+function haptic(type = 'light') {
+  try {
     tg?.HapticFeedback?.impactOccurred(type);
+  } catch (e) {}
+}
+
+// ===============================
+// DATA (ЗАГЛУШКИ → ПОТОМ 1С)
+// ===============================
+const products = [
+  { id: 1, name: 'Цемент М500', price: 75000 },
+  { id: 2, name: 'Песок', price: 30000 },
+  { id: 3, name: 'Щебень', price: 45000 },
+  { id: 4, name: 'Гипс', price: 28000 }
+];
+
+let order = {
+  client: null,
+  items: [],
+  comment: '',
+  total: 0
+};
+
+// ===============================
+// NAV STACK (НАЗАД)
+// ===============================
+let screenStack = [];
+let currentScreen = 'order';
+
+function setHeader(text, withBack = false) {
+  if (withBack) {
+    title.innerHTML = `
+      <span id="backBtn" style="margin-right:8px;cursor:pointer">⬅️</span>
+      ${text}
+    `;
+    document.getElementById('backBtn').onclick = () => {
+      haptic();
+      goBack();
+    };
+  } else {
+    title.innerText = text;
   }
+}
 
-  function setHeader(text, back = false) {
-    title.innerHTML = back
-      ? `⬅️ <span id="backBtn">${text}</span>`
-      : text;
+function goBack() {
+  const prev = screenStack.pop();
+  if (!prev) return;
 
-    if (back) {
-      document.getElementById('backBtn').onclick = () => {
-        haptic();
-        goBack();
-      };
-    }
-  }
+  if (prev === 'order') renderOrder();
+  if (prev === 'clients') renderClients();
+  if (prev === 'products') renderProductsTable();
+}
 
-  function goBack() {
-    const prev = screenStack.pop();
-    if (prev === 'order') renderOrder();
-  }
+// ===============================
+// SCREENS
+// ===============================
+function renderOrder() {
+  currentScreen = 'order';
+  setHeader('Создание заказа');
 
-  /* ===== DATA (ЗАГЛУШКИ → 1С) ===== */
+  content.innerHTML = `
+    <div class="card">
+      <h3>Форма заказа</h3>
 
-  function getProducts() {
-    return [
-      { id: 'p1', name: 'Цемент М500', price: 75000 },
-      { id: 'p2', name: 'Кирпич красный', price: 1200 },
-      { id: 'p3', name: 'Песок (мешок)', price: 30000 }
-    ];
-  }
+      <button class="btn" onclick="openClients()">👤 Выбрать клиента</button>
+      <br><br>
 
-  /* ===== ORDER ===== */
+      <button class="btn" onclick="openProducts()">📦 Добавить товары</button>
+      <br><br>
 
-  function calcTotal() {
-    return orderItems.reduce((s, i) => s + i.price * i.qty, 0);
-  }
+      <textarea
+        placeholder="Комментарий к заказу"
+        style="width:100%;height:80px"
+        onchange="order.comment = this.value"
+      ></textarea>
 
-  function renderOrder() {
-    currentScreen = 'order';
-    setHeader('Создание заказа');
+      <p><strong>Итого:</strong> ${order.total.toLocaleString()} сум</p>
 
-    content.innerHTML = `
-      <div class="card">
-        <button class="action-btn" id="addProductsBtn">
-          ➕ Добавить товары
-        </button><br><br>
+      <button class="btn primary">Создать заказ</button>
+    </div>
+  `;
+}
 
-        ${orderItems.length === 0 ? 'Товары не добавлены' :
-          orderItems.map(i =>
-            `<div>${i.name} — ${i.qty} × ${i.price}</div>`
-          ).join('')
-        }
+function renderClients() {
+  currentScreen = 'clients';
+  setHeader('Клиенты', true);
 
-        <hr>
-        <b>Итого: ${calcTotal()} сум</b>
-      </div>
+  content.innerHTML = `
+    <div class="card">
+      <p>📋 Список клиентов</p>
+      <p style="color:#6b7280">(будет загружаться из 1С)</p>
+    </div>
+  `;
+}
+
+function renderProductsTable() {
+  currentScreen = 'products';
+  setHeader('Добавление товаров', true);
+
+  content.innerHTML = `
+    <div class="card">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr>
+            <th align="left">Товар</th>
+            <th width="60">Кол-во</th>
+            <th width="80">Цена</th>
+          </tr>
+        </thead>
+        <tbody id="itemsTable"></tbody>
+      </table>
+
+      <br>
+      <button class="btn" onclick="addItemRow()">➕ Добавить строку</button>
+      <br><br>
+
+      <strong>Итого: <span id="totalSum">0</span> сум</strong>
+      <br><br>
+
+      <button class="btn primary" onclick="finishProducts()">Готово</button>
+    </div>
+  `;
+
+  renderItems();
+}
+
+// ===============================
+// OPEN HELPERS
+// ===============================
+function openClients() {
+  screenStack.push(currentScreen);
+  renderClients();
+}
+
+function openProducts() {
+  screenStack.push(currentScreen);
+  renderProductsTable();
+}
+
+// ===============================
+// ITEMS (ТАБЛИЧНАЯ ЧАСТЬ)
+// ===============================
+function addItemRow() {
+  haptic();
+  order.items.push({
+    productId: null,
+    name: '',
+    qty: 1,
+    price: 0
+  });
+  renderItems();
+}
+
+function renderItems() {
+  const tbody = document.getElementById('itemsTable');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  order.items.forEach((item, index) => {
+    const tr = document.createElement('tr');
+    <td>
+        <input
+          type="text"
+          placeholder="Начни вводить..."
+          value="${item.name}"
+          oninput="searchProduct(${index}, this.value)"
+          style="width:100%"
+        >
+        <div id="list-${index}"></div>
+      </td>
+
+      <td>
+        <input
+          type="number"
+          min="1"
+          value="${item.qty}"
+          onchange="updateQty(${index}, this.value)"
+          style="width:50px"
+        >
+      </td>
+
+      <td>
+        <input
+          type="number"
+          value="${item.price}"
+          onchange="updatePrice(${index}, this.value)"
+          style="width:70px"
+        >
+      </td>
     `;
 
-    document.getElementById('addProductsBtn').onclick = () => {
-      haptic();
-      screenStack.push('order');
-      renderProductsTable();
-    };
-  }
+    tbody.appendChild(tr);
+  });
 
-  /* ===== PRODUCTS TABLE ===== */
+  calcTotal();
+}
 
-  function renderProductsTable() {
-    currentScreen = 'products';
-    setHeader('Добавление товаров', true);
+// ===============================
+// PRODUCT SEARCH
+// ===============================
+function searchProduct(index, query) {
+  const list = document.getElementById(`list-${index}`);
+  list.innerHTML = '';
+  if (!query) return;
 
-    let rows = [{ product: null, qty: 1, price: 0 }];
+  const found = products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase())
+  );
 
-    function render() {
-      const products = getProducts();
+  found.forEach(p => {
+    const div = document.createElement('div');
+    div.innerText = p.name;
+    div.style.cursor = 'pointer';
+    div.style.padding = '4px 0';
+    div.onclick = () => selectProduct(index, p);
+    list.appendChild(div);
+  });
+}
 
-      content.innerHTML = `
-        <div class="card">
-          ${rows.map((r, idx) => `
-            <div style="margin-bottom:12px">
-              <input placeholder="Товар"
-                value="${r.product?.name || ''}"
-                data-search="${idx}"
-                style="width:100%;margin-bottom:4px">
+function selectProduct(index, product) {
+  order.items[index].productId = product.id;
+  order.items[index].name = product.name;
+  order.items[index].price = product.price;
+  renderItems();
+}
 
-              <input type="number" value="${r.qty}"
-                data-qty="${idx}" style="width:30%">
+// ===============================
+// UPDATE & TOTAL
+// ===============================
+function updateQty(index, value) {
+  order.items[index].qty = Number(value);
+  calcTotal();
+}
 
-              <input type="number" value="${r.price}"
-                data-price="${idx}" style="width:60%">
-            </div>
-          `).join('')}
+function updatePrice(index, value) {
+  order.items[index].price = Number(value);
+  calcTotal();
+}
 
-          <button id="addRow" class="action-btn">➕ Строка</button><br><br>
-          <button id="done" class="action-btn primary">Готово</button>
-        </div>
-      `;
+function calcTotal() {
+  order.total = order.items.reduce(
+    (sum, i) => sum + i.qty * i.price,
+    0
+  );
 
-      /* SEARCH */
-      rows.forEach((r, idx) => {
-        const input = document.querySelector(`[data-search="${idx}"]`);
-        input.oninput = e => {
-          const q = e.target.value.toLowerCase();
-          const found = products.find(p =>
-            p.name.toLowerCase().includes(q)
-          );
-          if (found) {
-            rows[idx].product = found;
-            rows[idx].price = found.price;
-            render();
-          }
-        };
+  const totalEl = document.getElementById('totalSum');
+  if (totalEl) totalEl.innerText = order.total.toLocaleString();
+}
 
-        document.querySelector(`[data-qty="${idx}"]`).oninput =
-          e => rows[idx].qty = +e.target.value;
+// ===============================
+// FINISH PRODUCTS
+// ===============================
+function finishProducts() {
+  haptic('medium');
+  renderOrder();
+}
 
-        document.querySelector(`[data-price="${idx}"]`).oninput =
-          e => rows[idx].price = +e.target.value;
-      });
-
-      document.getElementById('addRow').onclick = () => {
-        haptic();
-        rows.push({ product: null, qty: 1, price: 0 });
-        render();
-      };
-
-      document.getElementById('done').onclick = () => {
-        orderItems = rows
-          .filter(r => r.product)
-          .map(r => ({
-            ...r.product,
-            qty: r.qty,
-            price: r.price
-          }));
-        haptic('medium');
-        renderOrder();
-      };
-    }
-
-    render();
-  }
-
-  /* ===== BOTTOM BAR NAV ===== */
-
+// ===============================
+// BOTTOM BAR NAV
+// ===============================
 navButtons.forEach(btn => {
   btn.onclick = () => {
     haptic();
-
-    const screen = btn.dataset.screen;
-
-    // очищаем стек при переходе снизу
     screenStack = [];
 
-    if (screen === 'order') {
-      renderOrder();
-    }
-
-    if (screen === 'clients') {
-      setHeader('Клиенты');
-      content.innerHTML = `
-        <div class="card">
-          <p>Экран клиентов (следующий шаг)</p>
-        </div>
-      `;
-    }
-
-    if (screen === 'products') {
-      renderProductsTable();
-    }
+    const screen = btn.dataset.screen;
+    if (screen === 'order') renderOrder();
+    if (screen === 'clients') renderClients();
+    if (screen === 'products') renderProductsTable();
   };
 });
 
-/* ===== INIT ===== */
+// ===============================
+// START
+// ===============================
 renderOrder();
+
+    tr.innerHTML = `
