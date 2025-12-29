@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Заказы</title>
+
+  <!-- Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <h1>Создание заказа</h1>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+      <div class="card big">
+        <button class="primary-btn">➕ Создать заказ</button>
+      </div>
+
+      <div class="card">
+        <button class="secondary-btn">🧑 Клиенты</button>
+      </div>
+
+      <div class="card">
+        <button class="secondary-btn">📦 Товары</button>
+      </div>
+    </main>
+
+    <!-- BOTTOM BAR -->
+    <nav class="bottom-bar">
+      <button class="nav-btn active">➕</button>
+      <button class="nav-btn">🧑</button>
+      <button class="nav-btn">📦</button>
+      <button class="nav-btn">📑</button>
+    </nav>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
