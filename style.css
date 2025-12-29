@@ -259,3 +259,52 @@ html, body {
 .bottom-bar .nav-btn.center::before {
   display: none !important;
 }
+/* ===== FINAL ACTIVE TAB FIX (CENTER + COLOR) ===== */
+
+/* НЕАКТИВНЫЕ — СЕРЫЕ */
+.bottom-bar .nav-btn .icon,
+.bottom-bar .nav-btn .label {
+  color: #9ca3af; /* серый */
+  font-weight: 600;
+}
+
+/* АКТИВНЫЕ — СИНИЕ */
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
+  color: #2a7cff;
+  font-weight: 700;
+}
+
+/* КНОПКА — ОСНОВА ДЛЯ ПОЗИЦИОНИРОВАНИЯ */
+.bottom-bar .nav-btn {
+  position: relative;
+}
+
+/* ИДЕАЛЬНО ЦЕНТРИРОВАННЫЙ КРУГ */
+.bottom-bar .nav-btn.active::before {
+  content: "";
+  position: absolute;
+
+  width: 40px;
+  height: 40px;
+
+  background: rgba(42,124,255,0.25);
+  border-radius: 50%;
+
+  /* центрируем по ИКОНКЕ */
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  box-shadow: 0 4px 14px rgba(42,124,255,0.45);
+}
+
+/* ЦЕНТРАЛЬНЫЙ + НЕ ПОДСВЕЧИВАЕМ */
+.bottom-bar .nav-btn.center::before {
+  display: none !important;
+}
+
+.bottom-bar .nav-btn.center .icon,
+.bottom-bar .nav-btn.center .label {
+  color: white;
+}
