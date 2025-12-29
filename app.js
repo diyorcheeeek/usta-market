@@ -1,47 +1,86 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-  const buttons = document.querySelectorAll('.nav-btn');
-  const content = document.getElementById('content');
-  const title = document.getElementById('pageTitle');
+html, body {
+  margin: 0;
+  background: #f3f4f6;
+  color: #111827;
+}
 
-  function clearActive() {
-    buttons.forEach(b => b.classList.remove('active'));
-  }
+/* ===== HEADER ===== */
+.header {
+  height: 48px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+}
 
-  function render(screen) {
-    if (screen === 'order') {
-      title.innerText = 'Создание заказа';
-      content.innerHTML = <div class="card"><p>🧾 Здесь будет форма заказа</p></div>;
-    }
-    if (screen === 'clients') {
-      title.innerText = 'Клиенты';
-      content.innerHTML = <div class="card"><p>📋 Список клиентов</p></div>;
-    }
-    if (screen === 'products') {
-      title.innerText = 'Товары';
-      content.innerHTML = <div class="card"><p>📦 Список товаров</p></div>;
-    }
-  }
+#pageTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const screen = btn.dataset.screen;
+/* ===== CONTENT ===== */
+.content {
+  padding: 16px;
+  padding-bottom: 100px;
+}
 
-      // ❌ НИКОГДА НЕ ДЕЛАЕМ active ДЛЯ +
-      if (!btn.classList.contains('center')) {
-        clearActive();
-        btn.classList.add('active');
-      }
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-      tg?.HapticFeedback?.impactOccurred('medium');
-      render(screen);
-    });
-  });
+/* ===== BOTTOM BAR (STABLE) ===== */
+.bottom-bar {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
 
-  // INIT — активна ТОЛЬКО "Клиенты"
-  const defaultBtn = document.querySelector('.nav-btn[data-screen="clients"]');
-  defaultBtn.classList.add('active');
-  render('clients');
-});
+  height: 64px;
+  background: #ffffff;
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* buttons */
+.nav-btn {
+  background: none;
+  border: none;
+  text-align: center;
+  color: #6b7280;
+}
+
+.nav-btn .icon {
+  font-size: 22px;
+}
+
+.nav-btn .label {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* center button */
+.nav-btn.center {
+  background: #2563eb;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
