@@ -1,8 +1,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
-tg.expand();
 
-let currentScreen = 'home';
+let currentScreen = 'order';
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -18,54 +17,43 @@ function switchScreen(screen) {
 
   currentScreen = screen;
 
-  if (screen === 'home' || !screen) {
+  if (screen === 'order') {
     title.innerText = 'Создание заказа';
     backBtn.style.display = 'none';
 
     content.innerHTML = `
-      <div class="card big">
-        <button class="primary-btn">➕ Создать заказ</button>
+      <div class="card">
+        <p>🧾 Форма заказа</p>
       </div>
     `;
   }
 
   if (screen === 'clients') {
     title.innerText = 'Клиенты';
-    backBtn.style.display = 'block';
+    backBtn.style.display = 'flex';
 
     content.innerHTML = `
-      <div class="card big">
-        <p style="font-size:28px">📋 Список клиентов</p>
+      <div class="card">
+        <p>📋 Список клиентов</p>
       </div>
     `;
   }
 
   if (screen === 'products') {
     title.innerText = 'Товары';
-    backBtn.style.display = 'block';
+    backBtn.style.display = 'flex';
 
     content.innerHTML = `
-      <div class="card big">
-        <p style="font-size:28px">📦 Список товаров</p>
-      </div>
-    `;
-  }
-
-  if (screen === 'order') {
-    title.innerText = 'Создание заказа';
-    backBtn.style.display = 'block';
-
-    content.innerHTML = `
-      <div class="card big">
-        <p style="font-size:28px">🧾 Форма заказа</p>
+      <div class="card">
+        <p>📦 Список товаров</p>
       </div>
     `;
   }
 }
 
 function goBack() {
-  switchScreen('home');
+  switchScreen('order');
 }
 
-// INIT
-switchScreen('home');
+/* INIT */
+switchScreen('order');
