@@ -1,48 +1,78 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Заказы</title>
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-  <!-- Telegram WebApp -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+body {
+  margin: 0;
+  background: #f5f6f8;
+}
 
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+.header {
+  background: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-  <div id="app">
+.content {
+  padding: 16px;
+  padding-bottom: 90px;
+}
 
-    <!-- HEADER -->
-    <header class="header">
-      <h1>Создание заказа</h1>
-    </header>
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
 
-    <!-- CONTENT -->
-    <main class="content" id="content">
-      <div class="card big">
-        <button class="primary-btn">➕ Создать заказ</button>
-      </div>
+.card.big {
+  padding: 24px;
+}
 
-      <div class="card">
-        <button class="secondary-btn">🧑 Клиенты</button>
-      </div>
+.primary-btn {
+  width: 100%;
+  padding: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  background: #2a7cff;
+  color: white;
+}
 
-      <div class="card">
-        <button class="secondary-btn">📦 Товары</button>
-      </div>
-    </main>
+.secondary-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: #eef2ff;
+}
 
-    <!-- BOTTOM BAR -->
-    <nav class="bottom-bar">
-      <button class="nav-btn active">➕</button>
-      <button class="nav-btn">🧑</button>
-      <button class="nav-btn">📦</button>
-      <button class="nav-btn">📑</button>
-    </nav>
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+}
 
-  </div>
+.nav-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+}
 
-  <script src="app.js"></script>
-</body>
-</html>
+.nav-btn.active {
+  color: #2a7cff;
+}
