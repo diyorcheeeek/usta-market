@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
+  const tg = window.Telegram.WebApp;
+  tg.ready();
 
   const content = document.getElementById('content');
   const title = document.getElementById('pageTitle');
   const buttons = document.querySelectorAll('.nav-btn');
 
   function haptic(type = 'light') {
-    tg?.HapticFeedback?.impactOccurred(type);
+    if (tg.HapticFeedback) {
+      tg.HapticFeedback.impactOccurred(type);
+    }
   }
 
   /* ===== SCREENS ===== */
@@ -25,9 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="form-group">
           <label>Товары</label>
-          <div class="products-empty">
-            Товары не добавлены
-          </div>
+          <div class="products-empty">Товары не добавлены</div>
           <button class="add-btn">+ Добавить товар</button>
         </div>
 
@@ -46,20 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    // действия
+    // handlers
     content.querySelector('.select-btn').onclick = () => {
       haptic();
-      alert('Следующий шаг — список клиентов');
+      tg.showAlert('Следующий шаг — выбор клиента');
     };
 
     content.querySelector('.add-btn').onclick = () => {
       haptic();
-      alert('Следующий шаг — добавление товаров');
+      tg.showAlert('Следующий шаг — добавление товаров');
     };
 
     content.querySelector('.submit-btn').onclick = () => {
       haptic('medium');
-      tg?.showAlert?.('Заказ создан (пока демо)');
+      tg.showAlert('Заказ создан (демо)');
     };
   }
 
@@ -75,15 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ===== NAV ===== */
   buttons.forEach(btn => {
-    btn.onclick = () => {
+    btn.addEventListener('click', () => {
       haptic();
       const screen = btn.dataset.screen;
+
       if (screen === 'order') renderOrderForm();
       if (screen === 'clients') renderClients();
       if (screen === 'products') renderProducts();
-    };
+    });
   });
 
-  // init
+  /* ===== INIT ===== */
   renderOrderForm();
 });
