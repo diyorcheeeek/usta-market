@@ -13,22 +13,28 @@ html, body {
 
 /* ================= HEADER ================= */
 .header {
-  position: relative;
+ /* ================= HEADER ================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  height: 120px;
   background: white;
-  padding: 36px 24px;
+
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 0 24px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 /* КНОПКА НАЗАД */
 .back-btn {
-  position: absolute;
-  left: 24px;
+  width: 64px;
+  height: 64px;
 
-  font-size: 48px;          /* ×2 */
+  font-size: 48px;
   font-weight: 900;
 
   background: none;
@@ -40,13 +46,20 @@ html, body {
   justify-content: center;
 }
 
-/* ЗАГОЛОВОК */
-#pageTitle {
-  font-size: 48px;          /* ×2 */
-  font-weight: 900;
-  margin: 0;
+/* ОБЁРТКА ЗАГОЛОВКА */
+.title-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
+/* ЗАГОЛОВОК */
+#pageTitle {
+  font-size: 44px;
+  font-weight: 900;
+  margin: 0;
+  white-space: nowrap;        /* ❗ НЕ ПЕРЕНОСИТСЯ */
+}
 /* ================= CONTENT ================= */
 .content {
   padding: 32px;
