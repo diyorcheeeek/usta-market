@@ -1,384 +1,50 @@
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+/* ===== FINAL BOTTOM BAR FIX ===== */
 
-/* отключаем зум */
-html, body {
-  margin: 0;
-  background: #f3f4f6;
-  touch-action: manipulation;
-  overscroll-behavior: none;
-}
-
-/* ================= HEADER ================= */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-
-  height: 44px;
-  background: #ffffff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-#pageTitle {
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0;
-}
-
-/* ================= CONTENT ================= */
-.content {
-  padding: 10px;
-  padding-bottom: 90px; /* под уменьшенный bottom bar */
-}
-
-/* ================= CARD ================= */
-.card {
-  background: #ffffff;
-  border-radius: 11px;
-  padding: 14px;
-
-  box-shadow: 0 5px 13px rgba(0,0,0,0.08);
-}
-
-.card p {
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-/* ================= BOTTOM BAR (−1.5x) ================= */
-.bottom-bar {
-  position: fixed;
-  bottom: 8px;
-  left: 8px;
-  right: 8px;
-
-  height: 64px;          /* было 95 */
-  padding: 8px;          /* было 11 */
-
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  border-radius: 18px;   /* было 23 */
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  z-index: 20;
-}
-
-/* ================= NAV BUTTONS ================= */
-.nav-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  text-align: center;
-
-  padding: 6px 4px;      /* ⬅️ БОЛЬШЕ ВОЗДУХА ВОКРУГ ТЕКСТА */
-  border-radius: 12px;
-}
-
-.nav-btn .icon {
-  font-size: 22px;       /* было 28 */
-}
-
-.nav-btn .label {
-  margin-top: 4px;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-/* ================= CENTER BUTTON ================= */
-.nav-btn.center {
-  width: 50px;           /* было 75 */
-  height: 50px;
-
-  background: linear-gradient(135deg, #2a7cff, #1e5fd9);
-  color: white;
-
-  border-radius: 50%;
-  margin-top: -26px;     /* было -40 */
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  padding: 6px;          /* ⬅️ ЧУТЬ БОЛЬШЕ ВОЗДУХА */
-
-  box-shadow:
-    0 7px 16px rgba(42,124,255,0.5),
-    inset 0 -2px 4px rgba(0,0,0,0.15);
-}
-
-.nav-btn.center .icon {
-  font-size: 28px;       /* было 39 */
-  line-height: 1;
-}
-
-.nav-btn.center .label {
-  font-size: 9px;
-  margin-top: 2px;
-}
-/* ================= ACTIVE TAB ================= */
-.nav-btn {
-  position: relative;
-}
-
-/* КРУГЛАЯ ПОДСВЕТКА */
-.nav-btn.active::before {
-  content: "";
-  position: absolute;
-
-  width: 44px;
-  height: 44px;
-
-  background: rgba(42,124,255,0.15);
-  border-radius: 50%;
-
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  box-shadow: 0 4px 14px rgba(42,124,255,0.35);
-}
-
-/* ТЕКСТ И ИКОНКА АКТИВНОЙ */
-.nav-btn.active .icon,
-.nav-btn.active .label {
-  color: #2a7cff;
-  font-weight: 700;
-}
-
-/* НЕ ТРОГАЕМ ЦЕНТРАЛЬНУЮ КНОПКУ */
-.nav-btn.center::before {
-  display: none;
-}
-/* ===== FIX ACTIVE TAB HIGHLIGHT ===== */
-.nav-btn {
-  position: relative;
-}
-
-/* ИДЕАЛЬНЫЙ КРУГ */
-.nav-btn.active::before {
-  content: "";
-  position: absolute;
-
-  width: 36px;
-  height: 36px;
-
-  background: rgba(42,124,255,0.18);
-  border-radius: 50%;
-
-  top: 22px;                 /* ⬅️ ровно под иконкой */
-  left: 50%;
-  transform: translateX(-50%);
-
-  box-shadow: 0 3px 10px rgba(42,124,255,0.35);
-}
-
-/* АКТИВНЫЙ ЦВЕТ ИКОНКИ И ТЕКСТА */
-.nav-btn.active .icon,
-.nav-btn.active .label {
-  color: #2a7cff;
-  font-weight: 700;
-}
-
-/* ЦЕНТРАЛЬНУЮ КНОПКУ НЕ ТРОГАЕМ */
-.nav-btn.center::before {
-  display: none !important;
-}
-/* ===== FORCE ACTIVE TAB FIX ===== */
-.bottom-bar .nav-btn.active::before {
-  content: "";
-  position: absolute !important;
-
-  width: 36px !important;
-  height: 36px !important;
-
-  background: rgba(42,124,255,0.18) !important;
-  border-radius: 50% !important;
-
-  top: 18px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-
-  box-shadow: 0 3px 10px rgba(42,124,255,0.35) !important;
-  z-index: -1;
-}
-
-.bottom-bar .nav-btn.active .icon,
-.bottom-bar .nav-btn.active .label {
-  color: #2a7cff !important;
-  font-weight: 700 !important;
-}
-
-.bottom-bar .nav-btn.center.active::before {
-  display: none !important;
-}
-/* ===== FINAL ACTIVE TAB HIGHLIGHT ===== */
-.bottom-bar .nav-btn {
-  position: relative;
-}
-
-/* ИДЕАЛЬНЫЙ КРУГ ПОД ИКОНКОЙ */
-.bottom-bar .nav-btn.active::before {
-  content: "";
-  position: absolute;
-
-  width: 34px;
-  height: 34px;
-
-  background: rgba(42,124,255,0.2);
-  border-radius: 50%;
-
-  top: 16px;                 /* центр под иконкой */
-  left: 50%;
-  transform: translateX(-50%);
-
-  box-shadow: 0 3px 10px rgba(42,124,255,0.35);
-}
-
-/* АКТИВНЫЙ ЦВЕТ */
-.bottom-bar .nav-btn.active .icon,
-.bottom-bar .nav-btn.active .label {
-  color: #2a7cff;
-  font-weight: 700;
-}
-
-/* ЦЕНТРАЛЬНУЮ КНОПКУ + НЕ ПОДСВЕЧИВАЕМ */
-.bottom-bar .nav-btn.center::before {
-  display: none !important;
-}
-/* ===== FINAL ACTIVE TAB FIX (CENTER + COLOR) ===== */
-
-/* НЕАКТИВНЫЕ — СЕРЫЕ */
-.bottom-bar .nav-btn .icon,
-.bottom-bar .nav-btn .label {
-  color: #9ca3af; /* серый */
-  font-weight: 600;
-}
-
-/* АКТИВНЫЕ — СИНИЕ */
-.bottom-bar .nav-btn.active .icon,
-.bottom-bar .nav-btn.active .label {
-  color: #2a7cff;
-  font-weight: 700;
-}
-
-/* КНОПКА — ОСНОВА ДЛЯ ПОЗИЦИОНИРОВАНИЯ */
-.bottom-bar .nav-btn {
-  position: relative;
-}
-
-/* ИДЕАЛЬНО ЦЕНТРИРОВАННЫЙ КРУГ */
-.bottom-bar .nav-btn.active::before {
-  content: "";
-  position: absolute;
-
-  width: 40px;
-  height: 40px;
-
-  background: rgba(42,124,255,0.25);
-  border-radius: 50%;
-
-  /* центрируем по ИКОНКЕ */
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  box-shadow: 0 4px 14px rgba(42,124,255,0.45);
-}
-
-/* ЦЕНТРАЛЬНЫЙ + НЕ ПОДСВЕЧИВАЕМ */
-.bottom-bar .nav-btn.center::before {
-  display: none !important;
+/* + КНОПКА — ВСЕГДА НЕЙТРАЛЬНАЯ */
+.bottom-bar .nav-btn.center {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18) !important;
 }
 
 .bottom-bar .nav-btn.center .icon,
 .bottom-bar .nav-btn.center .label {
-  color: white;
+  color: #374151 !important;
 }
-/* ===== TELEGRAM COLOR OVERRIDE (FINAL FIX) ===== */
 
-/* НЕАКТИВНЫЕ ВКЛАДКИ — СЕРЫЕ */
+/* УБИРАЕМ ЛЮБОЙ active С + */
+.bottom-bar .nav-btn.center.active,
+.bottom-bar .nav-btn.center::before,
+.bottom-bar .nav-btn.center .tab-bg {
+  display: none !important;
+}
+
+/* НЕАКТИВНЫЕ */
 .bottom-bar .nav-btn .icon,
 .bottom-bar .nav-btn .label {
   color: #9ca3af !important;
-  font-weight: 600 !important;
 }
 
-/* АКТИВНАЯ ВКЛАДКА — СИНЯЯ */
-.bottom-bar .nav-btn.active .icon,
-.bottom-bar .nav-btn.active .label {
-  color: #2a7cff !important;
-  font-weight: 700 !important;
-}
-
-/* ОСНОВА ДЛЯ ПОДСВЕТКИ */
-.bottom-bar .nav-btn {
-  position: relative;
-}
-
-/* ЧЁТКИЙ, ЯРКИЙ, ЦЕНТРИРОВАННЫЙ КРУГ */
+/* АКТИВНАЯ ВКЛАДКА — СЕРАЯ И БОЛЬШЕ */
 .bottom-bar .nav-btn.active::before {
   content: "";
   position: absolute;
 
-  width: 42px;
-  height: 42px;
+  width: 48px;     /* ⬅️ БОЛЬШЕ */
+  height: 48px;
 
-  background: rgba(42,124,255,0.35) !important;
+  background: rgba(156,163,175,0.35); /* серый */
   border-radius: 50%;
 
-  /* ЦЕНТР ПОД ИКОНКОЙ */
   top: 6px;
   left: 50%;
   transform: translateX(-50%);
 
-  box-shadow: 0 6px 18px rgba(42,124,255,0.55) !important;
-  z-index: -1;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
 }
 
-/* ЦЕНТРАЛЬНЫЙ + — БЕЗ ПОДСВЕТКИ */
-.bottom-bar .nav-btn.center::before {
-  display: none !important;
-}
-
-.bottom-bar .nav-btn.center .icon,
-.bottom-bar .nav-btn.center .label {
-  color: #ffffff !important;
-}
-/* ===== FIX CENTER PLUS ALWAYS BLUE ===== */
-
-/* УБИРАЕМ active ЭФФЕКТ У + */
-.bottom-bar .nav-btn.center.active {
-  background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15) !important;
-}
-
-/* ИКОНКА + — НЕ СИНЯЯ */
-.bottom-bar .nav-btn.center .icon {
-  color: #374151 !important;   /* тёмно-серый */
-}
-
-/* ТЕКСТ "Заказ" — НЕ СИНИЙ */
-.bottom-bar .nav-btn.center .label {
+/* АКТИВНЫЙ ТЕКСТ */
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
   color: #374151 !important;
   font-weight: 700;
-}
-
-/* НА ВСЯКИЙ СЛУЧАЙ — НИКАКОЙ ПОДСВЕТКИ */
-.bottom-bar .nav-btn.center::before,
-.bottom-bar .nav-btn.center .tab-bg {
-  display: none !important;
 }
