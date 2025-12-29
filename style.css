@@ -48,3 +48,57 @@
   color: #374151 !important;
   font-weight: 700;
 }
+/* ===== BOTTOM BAR ACTIVE STATE (VALID CSS) ===== */
+
+/* базовое состояние */
+.bottom-bar .nav-btn {
+  position: relative;
+}
+
+/* НЕАКТИВНЫЕ */
+.bottom-bar .nav-btn .icon,
+.bottom-bar .nav-btn .label {
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+/* АКТИВНЫЕ */
+.bottom-bar .nav-btn.active .icon,
+.bottom-bar .nav-btn.active .label {
+  color: #374151;
+  font-weight: 700;
+}
+
+/* СЕРАЯ КРУГЛАЯ ПОДСВЕТКА */
+.bottom-bar .nav-btn.active::before {
+  content: "";
+  position: absolute;
+
+  width: 46px;
+  height: 46px;
+
+  background-color: rgba(156, 163, 175, 0.35);
+  border-radius: 50%;
+
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ЦЕНТРАЛЬНАЯ КНОПКА + — БЕЗ ACTIVE */
+.bottom-bar .nav-btn.center {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+.bottom-bar .nav-btn.center .icon,
+.bottom-bar .nav-btn.center .label {
+  color: #374151;
+}
+
+/* ЗАПРЕТ ПОДСВЕТКИ ДЛЯ + */
+.bottom-bar .nav-btn.center::before {
+  content: none;
+}
