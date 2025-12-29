@@ -1,158 +1,56 @@
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Usta Market</title>
 
-/* ❌ Отключаем zoom */
-html, body {
-  margin: 0;
-  background: #f3f4f6;
-  touch-action: manipulation;
-  overscroll-behavior: none;
-}
+  <!-- ❌ ОТКЛЮЧЕНИЕ ZOOM -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
 
-/* ================= HEADER ================= */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  <!-- Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  height: 120px;
-  background: #fff;
+  <link rel="stylesheet" href="style.css?v=1" />
+</head>
+<body>
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+<div id="app">
 
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-}
+  <!-- HEADER -->
+  <header class="header">
+    <h1 id="pageTitle">Создание заказа</h1>
+  </header>
 
-.back-btn {
-  position: absolute;
-  left: 24px;
+  <!-- CONTENT -->
+  <main class="content" id="content">
+    <div class="card">
+      <p>🧾 Здесь будет форма заказа</p>
+    </div>
+  </main>
 
-  width: 64px;
-  height: 64px;
+  <!-- FLOATING BOTTOM BAR -->
+  <nav class="bottom-bar">
+    <button class="nav-btn" data-screen="clients">
+      <div class="icon">🧑</div>
+      <div class="label">Клиенты</div>
+    </button>
 
-  font-size: 48px;
-  font-weight: 900;
+    <button class="nav-btn center" data-screen="order">
+      <div class="icon">+</div>
+      <div class="label">Заказ</div>
+    </button>
 
-  background: none;
-  border: none;
-  color: #2a7cff;
+    <button class="nav-btn" data-screen="products">
+      <div class="icon">📦</div>
+      <div class="label">Товары</div>
+    </button>
+  </nav>
 
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
+</div>
 
-#pageTitle {
-  font-size: 44px;
-  font-weight: 900;
-  margin: 0;
-  white-space: nowrap;
-}
-
-/* ================= CONTENT ================= */
-.content {
-  padding: 32px;
-  padding-bottom: 300px;
-}
-
-/* ================= CARD ================= */
-.card {
-  background: white;
-  border-radius: 28px;
-  padding: 40px;
-  margin-bottom: 28px;
-
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-
-.card p {
-  font-size: 32px;
-  font-weight: 600;
-}
-
-/* ================= BUTTON ================= */
-.primary-btn {
-  width: 100%;
-  padding: 40px;
-
-  font-size: 36px;
-  font-weight: 800;
-
-  border: none;
-  border-radius: 24px;
-
-  background: #2a7cff;
-  color: white;
-}
-
-/* ================= BOTTOM BAR ================= */
-.bottom-bar {
-  position: fixed;
-  bottom: 28px;
-  left: 20px;
-  right: 20px;
-
-  height: 220px;
-  padding: 28px;
-
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  border-radius: 52px;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(20px);
-
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  z-index: 30;
-}
-
-.nav-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  text-align: center;
-}
-
-.nav-btn .icon {
-  font-size: 72px;
-}
-
-.nav-btn .label {
-  margin-top: 10px;
-  font-size: 28px;
-  font-weight: 800;
-}
-
-/* CENTER BUTTON */
-.nav-btn.center {
-  width: 180px;
-  height: 180px;
-
-  background: linear-gradient(135deg, #2a7cff, #1e5fd9);
-  color: white;
-
-  border-radius: 50%;
-  margin-top: -100px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  box-shadow:
-    0 24px 50px rgba(42,124,255,0.6),
-    inset 0 -6px 12px rgba(0,0,0,0.15);
-}
-
-.nav-btn.center .icon {
-  font-size: 96px;
-}
-
-.nav-btn.center .label {
-  font-size: 26px;
-}
+<script src="app.js?v=1"></script>
+</body>
+</html>
