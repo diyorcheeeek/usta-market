@@ -1,15 +1,24 @@
-const tg = window.Telegram.WebApp;
-tg.ready();
+// Ждём, пока DOM точно загрузится
+document.addEventListener('DOMContentLoaded', () => {
 
-// Простая навигация (пока заглушки)
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    tg.HapticFeedback?.impactOccurred('medium');
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
 
-    const screen = btn.dataset.screen;
-    const content = document.getElementById('content');
-    const title = document.getElementById('pageTitle');
+  const buttons = document.querySelectorAll('.nav-btn');
+  const content = document.getElementById('content');
+  const title = document.getElementById('pageTitle');
 
+  if (!buttons.length) {
+    console.error('NAV BUTTONS NOT FOUND');
+    return;
+  }
+
+  function setActive(btn) {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function render(screen) {
     if (screen === 'order') {
       title.innerText = 'Создание заказа';
       content.innerHTML = `
@@ -32,9 +41,26 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
       title.innerText = 'Товары';
       content.innerHTML = `
         <div class="card">
-          <p>📦 Список товаров</p>
-        </div>
+          <p>📦 Список товаров</p></div>
       `;
     }
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tg?.HapticFeedback?.impactOccurred('medium');
+
+      setActive(btn);
+
+      const screen = btn.getAttribute('data-screen');
+      render(screen);
+    });
   });
+
+  // ===== INIT =====
+  const defaultBtn = document.querySelector('.nav-btn[data-screen="order"]');
+  if (defaultBtn) {
+    setActive(defaultBtn);
+    render('order');
+  }
 });
