@@ -3,6 +3,10 @@
 // ===============================
 const tg = window.Telegram?.WebApp;
 tg?.ready();
+// ===============================
+// SELLER
+// ===============================
+const SELLER_NAME = 'Avazbek'; // ← поменяешь имя когда нужно
 
 // ===============================
 // ELEMENTS
@@ -280,7 +284,20 @@ function printOrder() {
     alert('Нет товаров для печати');
     return;
   }
+// СОХРАНЯЕМ ЗАКАЗ
+if (typeof getOrders === 'function') {
+  const orders = getOrders();
 
+  orders.push({
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    seller: SELLER_NAME,
+    items: order.items,
+    total: order.total
+  });
+
+  setOrders(orders);
+}
   const w = window.open('', '_blank');
 
   const rows = order.items.map(i => `
@@ -321,6 +338,7 @@ function printOrder() {
     <body onload="window.print()">
       <div class="center"><b>USTA MARKET</b></div>
       <div class="center">Список заказа</div>
+      <div class="center">Продавец: <b>${SELLER_NAME}</b></div>
       <hr>
 
       ${rows}
