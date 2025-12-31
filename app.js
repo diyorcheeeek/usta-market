@@ -277,6 +277,107 @@ function finishProducts() {
 // ===============================
 // PRINT (58 MM)
 // ===============================
+innerHTML = `
+      <td>
+        <input
+          type="text"
+          placeholder="Начни вводить..."
+          value="${item.name}"
+          oninput="searchProduct(${index}, this.value)"
+          style="width:100%"
+        >
+        <div id="list-${index}"></div>
+      </td>
+
+      <td>
+        <input
+          type="number"
+          min="1"
+          value="${item.qty}"
+          onchange="updateQty(${index}, this.value)"
+          style="width:50px"
+        >
+      </td>
+
+      <td>
+        <input
+          type="number"
+          value="${item.price}"
+          onchange="updatePrice(${index}, this.value)"
+          style="width:70px"
+        >
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  calcTotal();
+}
+
+// ===============================
+// PRODUCT SEARCH
+// ===============================
+function searchProduct(index, query) {
+  const list = document.getElementById(`list-${index}`);
+  list.innerHTML = '';
+  if (!query) return;
+
+  const found = products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  found.forEach(p => {
+    const div = document.createElement('div');
+    div.innerText = p.name;
+    div.style.cursor = 'pointer';
+    div.style.padding = '4px 0';
+    div.onclick = () => selectProduct(index, p);
+    list.appendChild(div);
+  });
+}
+
+function selectProduct(index, product) {
+  order.items[index].productId = product.id;
+  order.items[index].name = product.name;
+  order.items[index].price = product.price;
+  renderItems();
+}
+
+// ===============================
+// UPDATE & TOTAL
+// ===============================
+function updateQty(index, value) {
+  order.items[index].qty = Number(value);
+  calcTotal();
+}
+
+function updatePrice(index, value) {
+  order.items[index].price = Number(value);
+  calcTotal();
+}
+
+function calcTotal() {
+  order.total = order.items.reduce(
+    (sum, i) => sum + i.qty * i.price,
+    0
+  );
+
+  const totalEl = document.getElementById('totalSum');
+  if (totalEl) totalEl.innerText = order.total.toLocaleString();
+}
+
+// ===============================
+// FINISH PRODUCTS
+// ===============================
+function finishProducts() {
+  haptic('medium');
+  renderOrder();
+}
+
+// ===============================
+// PRINT (58 MM)
+// ===============================
 function printOrder() {
   if (order.items.length === 0) {
     alert('Нет товаров для печати');
