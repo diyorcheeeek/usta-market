@@ -345,7 +345,7 @@ function printOrder() {
 // ===============================
 // BOTTOM BAR NAV
 // ===============================
-navButtons.forEach(btn => {
+navButtons.forEach(btn => {                                                                                                                                                                  
   btn.onclick = () => {
     haptic();
     screenStack = [];
@@ -361,3 +361,4 @@ navButtons.forEach(btn => {
 // START
 // ===============================
 renderOrder();
+      
