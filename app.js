@@ -462,3 +462,107 @@ navButtons.forEach(btn => {
 // START
 // ===============================
 renderOrder();
+function openReceipt() {
+  if (order.items.length === 0) {
+    alert('Нет товаров для печати');
+    return;
+  }
+
+  haptic('medium');
+
+  const rows = order.items.map(i => `
+    <div class="row">
+      <div class="name">${i.name}</div>
+      <div class="qty">x${i.qty}</div>
+      <div class="sum">${(i.qty * i.price).toLocaleString()}</div>
+    </div>
+  `).join('');
+
+  const html = `
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чек</title>
+<style>
+  body {
+    margin: 0;
+    padding: 8px;
+    font-family: monospace;
+    background: #fff;
+    color: #000;
+    width: 58mm;
+  }
+  .header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .name { width: 60%; }
+  .qty { width: 15%; text-align: right; }
+  .sum { width: 25%; text-align: right; }
+  hr {
+    border: none;
+    border-top: 1px dashed #000;
+    margin: 6px 0;
+  }
+  .total {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+  }
+  .actions {
+    margin-top: 12px;
+    text-align: center;
+  }
+  button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">USTA MARKET</div>
+<div class="header">Чек заказа</div>
+
+<hr>
+${rows}
+<hr>
+
+<div class="total">
+  <span>ИТОГО</span>
+  <span>${order.total.toLocaleString()} сум</span>
+</div>
+
+<hr>
+
+<div class="actions">
+  <button onclick="share()">📤 Поделиться / Печать</button>
+</div>
+
+<script>
+function share() {
+  if (navigator.share) {
+    navigator.share({ title: 'Чек заказа' });
+  } else {
+    alert('Нажмите Поделиться → Печать');
+  }
+}
+</script>
+
+</body>
+</html>
+`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+
+  tg.openLink(url);
+}
