@@ -96,7 +96,8 @@ function renderOrder() {
 
       <p><strong>Итого:</strong> ${order.total.toLocaleString()} сум</p>
 
-      <button class="btn primary" onclick="printOrder()">🖨 Печать</button>
+      <button class="btn" onclick="saveOrder()">💾 Сохранить</button>
+<button class="btn primary" onclick="printOrder()">🖨 Печать</button>
     </div>
   `;
 }
