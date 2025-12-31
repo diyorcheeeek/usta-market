@@ -92,7 +92,7 @@ function renderOrder() {
 
       <p><strong>Итого:</strong> ${order.total.toLocaleString()} сум</p>
 
-      <button class="btn primary">Создать заказ</button>
+      <button class="btn primary" onclick="printOrder()">🖨 Печать</button>
     </div>
   `;
 }
@@ -176,7 +176,8 @@ function renderItems() {
   order.items.forEach((item, index) => {
     const tr = document.createElement('tr');
 
-    tr.innerHTML = `<td>
+    tr.innerHTML = `
+      <td>
         <input
           type="text"
           placeholder="Начни вводить..."
@@ -271,6 +272,74 @@ function calcTotal() {
 function finishProducts() {
   haptic('medium');
   renderOrder();
+}
+
+// ===============================
+// PRINT (58 MM)
+// ===============================
+function printOrder() {
+  if (order.items.length === 0) {
+    alert('Нет товаров для печати');
+    return;
+  }
+
+  const w = window.open('', '_blank');
+
+  const rows = order.items.map(i => `
+    <div class="row">
+      <span>${i.name}</span>
+      <span>x${i.qty}</span>
+      <span>${(i.qty * i.price).toLocaleString()}</span>
+    </div>
+  `).join('');
+
+  w.document.write(`
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body {
+          font-family: monospace;
+          width: 58mm;
+          margin: 0;
+          padding: 6px;
+          font-size: 12px;
+        }
+        .center {
+          text-align: center;
+          margin-bottom: 6px;
+        }
+        .row {
+          display: flex;
+          justify-content: space-between;
+        }
+        hr {
+          border: none;
+          border-top: 1px dashed #000;
+          margin: 6px 0;
+        }
+      </style>
+    </head>
+    <body onload="window.print()">
+      <div class="center"><b>USTA MARKET</b></div>
+      <div class="center">Список заказа</div>
+      <hr>
+
+      ${rows}
+
+      <hr>
+      <div class="row">
+        <b>ИТОГО</b>
+        <b>${order.total.toLocaleString()} сум</b>
+      </div>
+
+      <hr>
+      <div class="center">Спасибо!</div>
+    </body>
+    </html>
+  `);
+
+  w.document.close();
 }
 
 // ===============================
