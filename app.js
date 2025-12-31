@@ -288,10 +288,12 @@ function finishProducts() {
 // PRINT (58 MM)
 // ===============================
 function printOrder() {
-  if (order.items.length === 0) {
-    alert('Нет товаров для печати');
-    return;
-  }
+  const validItems = order.items.filter(i => i.name && i.qty > 0);
+
+if (validItems.length === 0) {
+  alert('Нет товаров для печати');
+  return;
+}
 // СОХРАНЯЕМ ЗАКАЗ
 if (typeof getOrders === 'function') {
   const orders = getOrders();
@@ -376,11 +378,12 @@ if (typeof getOrders === 'function') {
 // SAVE ORDER (NO PRINT)
 // ===============================
 function saveOrder() {
-  if (order.items.length === 0) {
-    alert('Нет товаров для сохранения');
-    return;
-  }
+  const validItems = order.items.filter(i => i.name && i.qty > 0);
 
+if (validItems.length === 0) {
+  alert('Нет товаров для сохранения');
+  return;
+}
   if (typeof getOrders === 'function') {
     const orders = getOrders();
 
@@ -388,7 +391,7 @@ function saveOrder() {
       id: Date.now(),
       date: new Date().toLocaleString(),
       seller: SELLER_NAME,
-      items: order.items,
+      items: validItems,
       total: order.total
     });
 
