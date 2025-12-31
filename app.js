@@ -15,11 +15,13 @@ const navButtons = document.querySelectorAll('.nav-btn');
 // HAPTIC
 // ===============================
 function haptic(type = 'light') {
-  try { tg?.HapticFeedback?.impactOccurred(type); } catch {}
+  try {
+    tg?.HapticFeedback?.impactOccurred(type);
+  } catch {}
 }
 
 // ===============================
-// DATA (позже будет 1С)
+// DATA (потом будет 1С)
 // ===============================
 const products = [
   { id: 1, name: 'Цемент М500', price: 75000 },
@@ -55,52 +57,61 @@ function setHeader(text, back = false) {
 function goBack() {
   const prev = screenStack.pop();
   if (!prev) return;
-  screens[prev]();
+  render(prev);
 }
 
 // ===============================
 // SCREENS
 // ===============================
-const screens = {
-  order() {
-    currentScreen = 'order';
+function render(screen) {
+  currentScreen = screen;
+
+  if (screen === 'order') {
     setHeader('Создание заказа');
 
     content.innerHTML = `
       <div class="card">
-        <button class="btn" onclick="openProducts()">📦 Добавить товары</button><br><br>
+        <button class="btn" onclick="openProducts()">📦 Добавить товары</button>
+        <br><br>
+
         <p><b>Итого:</b> ${order.total.toLocaleString()} сум</p>
-        <button class="btn primary" onclick="openReceipt()">🖨 Печать</button>
+
+        <button class="btn primary" onclick="printOrder()">🖨 Печать</button>
       </div>
     `;
-  },
+  }
 
-  products() {
-    currentScreen = 'products';
+  if (screen === 'products') {
     setHeader('Товары', true);
 
     content.innerHTML = `
       <div class="card">
         <table width="100%">
           <thead>
-            <tr><th>Товар</th><th>Кол</th><th>Цена</th></tr>
+            <tr>
+              <th>Товар</th>
+              <th width="50">Кол</th>
+              <th width="80">Цена</th>
+            </tr>
           </thead>
           <tbody id="itemsTable"></tbody>
         </table>
+
         <br>
         <button class="btn" onclick="addItem()">➕ Добавить</button>
       </div>
     `;
+
     renderItems();
   }
-};
+}
 
 // ===============================
 // PRODUCTS
 // ===============================
 function openProducts() {
   screenStack.push(currentScreen);
-  screens.products();
+  render('products');
 }
 
 function addItem() {
@@ -112,69 +123,131 @@ function renderItems() {
   const tbody = document.getElementById('itemsTable');
   tbody.innerHTML = '';
 
-  order.items.forEach((i, idx) => {
+  order.items.forEach((item, index) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
-        <input value="${i.name}" oninput="search(${idx}, this.value)">
-        <div id="list-${idx}"></div>
+        <input
+          placeholder="Начни вводить"
+          value="${item.name}"
+          oninput="searchProduct(${index}, this.value)"
+        >
+        <div id="list-${index}"></div>
       </td>
-      <td><input type="number" value="${i.qty}" onchange="setQty(${idx}, this.value)"></td>
-      <td><input type="number" value="${i.price}" onchange="setPrice(${idx}, this.value)"></td>
+
+      <td>
+        <input type="number" value="${item.qty}"
+          onchange="setQty(${index}, this.value)">
+      </td>
+
+      <td>
+        <input type="number" value="${item.price}"
+          onchange="setPrice(${index}, this.value)">
+      </td>
     `;
     tbody.appendChild(tr);
   });
+
   calcTotal();
 }
 
-function search(idx, q) {
-  const list = document.getElementById(`list-${idx}`);
+function searchProduct(index, query) {
+  const list = document.getElementById(`list-${index}`);
   list.innerHTML = '';
-  products.filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
+
+  if (!query) return;
+
+  products
+    .filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
     .forEach(p => {
-      const d = document.createElement('div');
-      d.innerText = p.name;
-      d.onclick = () => {
-        order.items[idx].name = p.name;
-        order.items[idx].price = p.price;
+      const div = document.createElement('div');
+      div.innerText = p.name;
+      div.onclick = () => {
+        order.items[index].name = p.name;
+        order.items[index].price = p.price;
         renderItems();
       };
-      list.appendChild(d);
+      list.appendChild(div);
     });
 }
 
-function setQty(i, v) { order.items[i].qty = +v; calcTotal(); }
-function setPrice(i, v) { order.items[i].price = +v; calcTotal(); }
+function setQty(i, v) {
+  order.items[i].qty = Number(v);
+  calcTotal();
+}
+
+function setPrice(i, v) {
+  order.items[i].price = Number(v);
+  calcTotal();
+}
 
 function calcTotal() {
-  order.total = order.items.reduce((s, i) => s + i.qty * i.price, 0);
+  order.total = order.items.reduce(
+    (s, i) => s + i.qty * i.price,
+    0
+  );
 }
 
 // ===============================
-// PRINT (SAFE)
+// PRINT (ПЕРВЫЙ ПРОСТОЙ ВАРИАНТ)
 // ===============================
-function openReceipt() {
+function printOrder() {
   if (!order.items.length) {
-    tg.showAlert('Нет товаров');
+    alert('Нет товаров для печати');
     return;
   }
 
-  const text = `
-USTA MARKET
-----------------
-${order.items.map(i =>
-`${i.name}
-x${i.qty} = ${(i.qty*i.price).toLocaleString()}`
-).join('\n')}
-----------------
-ИТОГО: ${order.total.toLocaleString()} сум
-`;
+  let html = `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body {
+          font-family: monospace;
+          width: 58mm;
+          margin: 0;
+          padding: 6px;
+        }
+        .center { text-align: center; }
+        .row {
+          display: flex;
+          justify-content: space-between;
+        }
+        hr {
+          border: none;
+          border-top: 1px dashed #000;
+          margin: 6px 0;
+        }
+      </style>
+    </head>
+    <body onload="window.print()">
+      <div class="center"><b>USTA MARKET</b></div>
+      <hr>
+  `;
 
-  tg.showPopup({
-    title: 'Чек',
-    message: text,
-    buttons: [{ type: 'ok', text: 'Закрыть' }]
+  order.items.forEach(i => {
+    html += `
+      <div class="row">
+        <span>${i.name}</span>
+        <span>x${i.qty}</span>
+        <span>${(i.qty * i.price).toLocaleString()}</span>
+      </div>
+    `;
   });
+
+  html += `
+      <hr>
+      <div class="row">
+        <b>ИТОГО</b>
+        <b>${order.total.toLocaleString()} сум</b>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const w = window.open('', '_self');
+  w.document.write(html);
+  w.document.close();
 }
 
 // ===============================
@@ -184,11 +257,11 @@ navButtons.forEach(btn => {
   btn.onclick = () => {
     haptic();
     screenStack = [];
-    screens[btn.dataset.screen]();
+    render(btn.dataset.screen);
   };
 });
 
 // ===============================
 // START
 // ===============================
-screens.order();
+render('order');
