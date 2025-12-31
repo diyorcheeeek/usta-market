@@ -332,7 +332,14 @@ function printOrder() {
       </div>
 
       <hr>
-      <div class="center">Спасибо!</div>
+
+<div style="margin-top:12px">
+  <div>Подпись:</div>
+  <div style="margin-top:20px">______________________</div>
+</div>
+
+<hr>
+<div class="center">Спасибо!</div>
     </body>
     </html>
   `);
