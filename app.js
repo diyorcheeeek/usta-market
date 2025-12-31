@@ -100,6 +100,13 @@ function renderOrder() {
 <button class="btn primary" onclick="printOrder()">🖨 Печать</button>
     </div>
   `;
+  // СБРОС ЗАКАЗА ПОСЛЕ ПЕЧАТИ
+order = {
+  client: null,
+  items: [],
+  comment: '',
+  total: 0
+};
 }
 
 function renderClients() {
@@ -365,21 +372,7 @@ if (typeof getOrders === 'function') {
 
   w.document.close();
 }
-
-// ===============================
-// BOTTOM BAR NAV
-// ===============================
-navButtons.forEach(btn => {                                                                                                                                                                  
-  btn.onclick = () => {
-    haptic();
-    screenStack = [];
-
-    const screen = btn.dataset.screen;
-    if (screen === 'order') renderOrder();
-    if (screen === 'clients') renderClients();
-    if (screen === 'products') renderProductsTable();
-  };
-  // ===============================
+ // ===============================
 // SAVE ORDER (NO PRINT)
 // ===============================
 function saveOrder() {
@@ -413,6 +406,20 @@ function saveOrder() {
   alert('Заказ сохранён');
   renderOrder();
 }
+// ===============================
+// BOTTOM BAR NAV
+// ===============================
+navButtons.forEach(btn => {                                                                                                                                                                  
+  btn.onclick = () => {
+    haptic();
+    screenStack = [];
+
+    const screen = btn.dataset.screen;
+    if (screen === 'order') renderOrder();
+    if (screen === 'clients') renderClients();
+    if (screen === 'products') renderProductsTable();
+  };
+ 
 });// ===============================
 // START
 // ===============================
