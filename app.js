@@ -378,6 +378,40 @@ navButtons.forEach(btn => {
     if (screen === 'clients') renderClients();
     if (screen === 'products') renderProductsTable();
   };
+  // ===============================
+// SAVE ORDER (NO PRINT)
+// ===============================
+function saveOrder() {
+  if (order.items.length === 0) {
+    alert('Нет товаров для сохранения');
+    return;
+  }
+
+  if (typeof getOrders === 'function') {
+    const orders = getOrders();
+
+    orders.push({
+      id: Date.now(),
+      date: new Date().toLocaleString(),
+      seller: SELLER_NAME,
+      items: order.items,
+      total: order.total
+    });
+
+    setOrders(orders);
+  }
+
+  // СБРОС ЗАКАЗА
+  order = {
+    client: null,
+    items: [],
+    comment: '',
+    total: 0
+  };
+
+  alert('Заказ сохранён');
+  renderOrder();
+}
 });// ===============================
 // START
 // ===============================
