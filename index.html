@@ -13,7 +13,11 @@
   <style>
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
@@ -23,8 +27,9 @@
       color: #111827;
     }
 
+    /* ===== HEADER ===== */
     .header {
-      background: #fff;
+      background: #ffffff;
       padding: 12px;
       text-align: center;
       font-weight: 600;
@@ -34,25 +39,29 @@
       z-index: 10;
     }
 
+    /* ===== CONTENT ===== */
     .content {
       padding: 16px;
       padding-bottom: 110px;
+      height: calc(100vh - 150px);
+      overflow-y: auto;
     }
 
     .card {
-      background: #fff;
+      background: #ffffff;
       padding: 16px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
+    /* ===== BOTTOM BAR ===== */
     .bottom-bar {
       position: fixed;
       left: 12px;
       right: 12px;
       bottom: 12px;
       height: 64px;
-      background: #fff;
+      background: #ffffff;
       border-radius: 18px;
       display: flex;
       align-items: center;
@@ -75,17 +84,23 @@
 
     .nav-btn .icon {
       font-size: 20px;
+      line-height: 1;
     }
 
     .nav-btn.center {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: #111827;
-      color: #fff;
+      background: #2563eb;
+      color: #ffffff;
       font-size: 22px;
       justify-content: center;
-      margin-top: -18px;
+      box-shadow: 0 6px 16px rgba(37,99,235,0.5);
+    }
+
+    .nav-btn.center .label {
+      font-size: 10px;
+      margin-top: -2px;
     }
   </style>
 </head>
@@ -100,16 +115,31 @@
   <!-- BOTTOM BAR -->
   <nav class="bottom-bar">
 
+    <!-- КЛИЕНТЫ -->
+    <button class="nav-btn" data-screen="clients">
+      <div class="icon">👤</div>
+      <div class="label">Клиенты</div>
+    </button>
+
+    <!-- ЗАКАЗ (обычный) -->
+    <button class="nav-btn" data-screen="order">
+      <div class="icon">➕</div>
+      <div class="label">Заказ</div>
+    </button>
+
+    <!-- ЗАКАЗЫ -->
     <button class="nav-btn" data-screen="orders">
       <div class="icon">📋</div>
       <div class="label">Заказы</div>
     </button>
 
+    <!-- ЦЕНТРАЛЬНАЯ КНОПКА -->
     <button class="nav-btn center" data-screen="order">
-      <div class="icon">＋</div>
+      <div class="icon">+</div>
       <div class="label">Заказ</div>
     </button>
 
+    <!-- ТОВАРЫ -->
     <button class="nav-btn" data-screen="products">
       <div class="icon">📦</div>
       <div class="label">Товары</div>
@@ -118,7 +148,7 @@
   </nav>
 
   <!-- JS -->
-  <script src="./app.js?v=4001"></script>
+  <script src="./app.js?v=6001"></script>
   <script src="./orders.js?v=1"></script>
 </body>
 </html>
