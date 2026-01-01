@@ -7,18 +7,10 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -27,9 +19,8 @@
       color: #111827;
     }
 
-    /* ===== HEADER ===== */
     .header {
-      background: #ffffff;
+      background: #fff;
       padding: 12px;
       text-align: center;
       font-weight: 600;
@@ -39,29 +30,25 @@
       z-index: 10;
     }
 
-    /* ===== CONTENT ===== */
     .content {
       padding: 16px;
       padding-bottom: 110px;
-      height: calc(100vh - 150px);
-      overflow-y: auto;
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       padding: 16px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* ===== BOTTOM BAR ===== */
     .bottom-bar {
       position: fixed;
       left: 12px;
       right: 12px;
       bottom: 12px;
       height: 64px;
-      background: #ffffff;
+      background: #fff;
       border-radius: 18px;
       display: flex;
       align-items: center;
@@ -92,7 +79,7 @@
       height: 48px;
       border-radius: 50%;
       background: #2563eb;
-      color: #ffffff;
+      color: #fff;
       font-size: 22px;
       justify-content: center;
       box-shadow: 0 6px 16px rgba(37,99,235,0.5);
@@ -106,40 +93,32 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <div class="header" id="pageTitle">Загрузка…</div>
-
-  <!-- CONTENT -->
   <div class="content" id="content"></div>
 
-  <!-- BOTTOM BAR -->
+  <!-- BOTTOM BAR (ОДИН!) -->
   <nav class="bottom-bar">
 
-    <!-- КЛИЕНТЫ -->
     <button class="nav-btn" data-screen="clients">
       <div class="icon">👤</div>
       <div class="label">Клиенты</div>
     </button>
 
-    <!-- ЗАКАЗ (обычный) -->
     <button class="nav-btn" data-screen="order">
       <div class="icon">➕</div>
       <div class="label">Заказ</div>
     </button>
 
-    <!-- ЗАКАЗЫ -->
     <button class="nav-btn" data-screen="orders">
       <div class="icon">📋</div>
       <div class="label">Заказы</div>
     </button>
 
-    <!-- ЦЕНТРАЛЬНАЯ КНОПКА -->
     <button class="nav-btn center" data-screen="order">
       <div class="icon">+</div>
       <div class="label">Заказ</div>
     </button>
 
-    <!-- ТОВАРЫ -->
     <button class="nav-btn" data-screen="products">
       <div class="icon">📦</div>
       <div class="label">Товары</div>
@@ -147,8 +126,7 @@
 
   </nav>
 
-  <!-- JS -->
-  <script src="./app.js?v=6001"></script>
+  <script src="./app.js?v=FIX1"></script>
   <script src="./orders.js?v=1"></script>
 </body>
 </html>
