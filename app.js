@@ -270,9 +270,14 @@ const app = {
         <div class="card">
           <div class="flex-between">
             <strong>${o.client}</strong>
-            <span style="color:var(--success)">${o.total.toLocaleString()}</span>
+            <span style="color:var(--success); font-weight:bold">${o.total.toLocaleString()}</span>
           </div>
-          <div style="font-size:12px; color:#888">${o.date} • ${o.items.length} поз.</div>
+          <div style="font-size:12px; color:#888; margin: 5px 0">${o.date} • ${o.items.length} поз.</div>
+          
+          <div style="display:flex; gap:10px; margin-top:10px; border-top:1px solid #333; padding-top:10px">
+             <button style="flex:1; background:#333; color:white; border:none; padding:8px; border-radius:4px" onclick="app.order.edit(${o.id})">✏️ Ред.</button>
+             <button style="flex:1; background:#333; color:white; border:none; padding:8px; border-radius:4px" onclick="app.order.printHistory(${o.id})">🖨 Печать</button>
+          </div>
         </div>
       `).join('');
 

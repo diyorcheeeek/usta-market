@@ -83,7 +83,10 @@
           </div>
         </div>
 
-        <button class="btn-primary full-width" onclick="app.order.saveAndPrint()">🖨 Сохранить и Печать</button>
+        <div class="action-buttons">
+          <button class="btn-secondary" onclick="app.order.printCurrent()">🖨 Печать</button>
+          <button class="btn-primary" onclick="app.order.save()">💾 Сохранить</button>
+        </div>
       </div>
     </div>
 
