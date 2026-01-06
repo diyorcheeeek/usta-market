@@ -3,35 +3,89 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Mini App</title>
+  <title>Мобильный Учет</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Using Inter font for premium business feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <header class="header">
-    Telegram Shop
+  <!-- Loading Screen -->
+  <div id="loader" class="loader-overlay">
+    <div class="spinner"></div>
+    <p>Загрузка системы...</p>
+  </div>
+
+  <!-- Header -->
+  <header class="top-bar">
+    <div class="user-info">
+      <span class="greeting">👋 Привет,</span>
+      <span id="adminName" class="username">Админ</span>
+    </div>
+    <div class="balance-badge" onclick="app.views.open('dashboard')">
+      <span id="headerTotal">0 ₸</span>
+    </div>
   </header>
 
-  <main id="view"></main>
+  <!-- Main View Container -->
+  <main id="app">
+    <!-- Views will be injected here by JS -->
+  </main>
 
-  <nav class="bottom-bar">
-    <button class="nav-item" data-view="history" onclick="openHistory()">
-      <span class="nav-icon">⏱</span>
-      <span>History</span>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-target="dashboard" onclick="app.views.open('dashboard')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+      <span>Главная</span>
     </button>
 
-    <div style="position: relative; width: 60px;">
-      <button class="fab" onclick="openCreate()">＋</button>
-    </div>
+    <button class="nav-btn" data-target="pos" onclick="app.views.open('pos')">
+      <div class="fab-wrapper">
+        <div class="fab-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+      </div>
+      <span>Касса</span>
+    </button>
 
-    <button class="nav-item" data-view="products" onclick="openProducts()">
-      <span class="nav-icon">📦</span>
-      <span>Products</span>
+    <button class="nav-btn" data-target="products" onclick="app.views.open('products')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path
+          d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+        </path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      <span>Склад</span>
     </button>
   </nav>
+
+  <!-- Modals / Sheets -->
+  <div id="modalOverlay" class="modal-overlay hidden" onclick="app.ui.closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalTitle">Заголовок</h3>
+        <button class="close-btn" onclick="app.ui.closeModal()">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- Dynamic Content -->
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -1,281 +1,309 @@
 // ===============================
-// TELEGRAM & UTILS
+// CORE: STATE & STORAGE
 // ===============================
-const tg = Telegram.WebApp;
-tg.ready();
-tg.expand();
+const store = {
+  data: {
+    products: JSON.parse(localStorage.getItem('products') || '[]'),
+    orders: JSON.parse(localStorage.getItem('orders') || '[]'),
+    cart: [],
+    user: Telegram.WebApp.initDataUnsafe?.user?.first_name || 'Владелец'
+  },
 
-// ===============================
-// STATE
-// ===============================
-const state = {
-  admin: tg.initDataUnsafe?.user?.first_name || "Admin",
-  products: JSON.parse(localStorage.getItem("products") || "[]"),
-  order: [],
-  history: JSON.parse(localStorage.getItem("history") || "[]"),
-  currentView: 'home'
+  save() {
+    localStorage.setItem('products', JSON.stringify(this.data.products));
+    localStorage.setItem('orders', JSON.stringify(this.data.orders));
+  },
+
+  addProduct(product) {
+    this.data.products.push({ ...product, id: Date.now() });
+    this.save();
+  },
+
+  deleteProduct(id) {
+    this.data.products = this.data.products.filter(p => p.id !== id);
+    this.save();
+  },
+
+  createOrder(clientName) {
+    if (this.data.cart.length === 0) return false;
+
+    const total = this.data.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+    const order = {
+      id: Date.now(),
+      date: new Date().toLocaleString('ru-RU'),
+      timestamp: Date.now(),
+      client: clientName || 'Клиент',
+      items: [...this.data.cart],
+      total: total
+    };
+
+    this.data.orders.unshift(order);
+    this.data.cart = []; // Clear cart
+    this.save();
+    return true;
+  }
 };
 
 // ===============================
-// NAVIGATION & VIEW
+// UI: VIEWS & COMPONENTS
 // ===============================
-function view(html, viewName = 'unknown') {
-  const container = document.getElementById("view");
-  container.innerHTML = `<div class="fade-in">${html}</div>`;
-  state.currentView = viewName;
-  updateNav(viewName);
-}
+const app = {
+  init() {
+    document.getElementById('adminName').textContent = store.data.user;
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
 
-function updateNav(viewName) {
-  // Update active state of bottom bar
-  document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.remove('active');
-    if (el.dataset.view === viewName) el.classList.add('active');
-  });
-}
+    // Initial Render
+    this.views.open('dashboard');
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
+  },
 
-// ===============================
-// HOME
-// ===============================
-function openHome() {
-  view(`
-    <h2>👋 Hello, ${state.admin}</h2>
-    <div class="card">
-      <p>Welcome to your customized shop manager.</p>
-      <p>Start by adding products or creating a new order.</p>
-    </div>
-    
-    <div class="card" onclick="openCreate()" style="cursor:pointer">
-      <h3 style="margin:0">📝 New Order</h3>
-      <p style="margin:5px 0 0 0; font-size:14px">Create a new order quickly</p>
-    </div>
+  views: {
+    active: '',
 
-    <div class="card" onclick="openProducts()" style="cursor:pointer">
-      <h3 style="margin:0">📦 Products</h3>
-      <p style="margin:5px 0 0 0; font-size:14px">Manage your catalog (${state.products.length} items)</p>
-    </div>
-  `, 'home');
-}
+    open(viewName) {
+      if (this.active === viewName && viewName !== 'products') return; // Allow products refresh
+      this.active = viewName;
 
-// ===============================
-// PRODUCT CATALOG
-// ===============================
-function openProducts() {
-  const listHtml = state.products.length > 0
-    ? state.products.map((p, i) => `
-        <div class="product-item">
-          <div>
-            <strong>${p.name}</strong><br>
-            <span style="color:var(--text-secondary); font-size:13px">${p.price} UZS</span>
+      // Update Nav
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === viewName);
+      });
+
+      // Render Content
+      const container = document.getElementById('app');
+      container.innerHTML = ''; // Clear previous
+
+      switch (viewName) {
+        case 'dashboard': app.render.dashboard(container); break;
+        case 'pos': app.render.pos(container); break;
+        case 'products': app.render.products(container); break;
+      }
+    }
+  },
+
+  render: {
+    dashboard(container) {
+      // Analytics
+      const today = new Date().toDateString();
+      const todayOrders = store.data.orders.filter(o => new Date(o.timestamp).toDateString() === today);
+      const todayRevenue = todayOrders.reduce((acc, o) => acc + o.total, 0);
+      const totalRevenue = store.data.orders.reduce((acc, o) => acc + o.total, 0);
+
+      // Update header total
+      document.getElementById('headerTotal').innerText = `${totalRevenue.toLocaleString()} ₸`;
+
+      container.innerHTML = `
+        <h2 class="page-title">Сводка</h2>
+        
+        <div class="card">
+          <h3 style="margin-top:0">Сегодня</h3>
+          <div class="stat-grid">
+            <div class="stat-item">
+              <span class="stat-val" style="color:var(--success)">${todayRevenue.toLocaleString()} ₸</span>
+              <span class="stat-label">Выручка</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-val">${todayOrders.length}</span>
+              <span class="stat-label">Продаж</span>
+            </div>
           </div>
-          <button class="del-btn" onclick="deleteProduct(${i})">✕</button>
         </div>
-      `).join("")
-    : `<p style="text-align:center">No products found.</p>`;
 
-  view(`
-    <h2>Products</h2>
-    <div class="card">
-      <input id="newProdName" placeholder="Product Name">
-      <input id="newProdPrice" type="number" placeholder="Price">
-      <button class="primary" onclick="addProductToCatalog()">+ Add Product</button>
-    </div>
-    
-    <div class="card">
-      ${listHtml}
-    </div>
-  `, 'products');
-}
+        <div class="flex justify-between items-center" style="margin: 20px 0 10px 0;">
+          <h3 style="margin:0">Последние чеки</h3>
+          <button class="btn btn-sm" onclick="app.views.open('pos')" style="background:var(--bg-elevated)">+ Новый</button>
+        </div>
 
-function addProductToCatalog() {
-  const name = document.getElementById("newProdName").value.trim();
-  const price = +document.getElementById("newProdPrice").value;
+        <div class="history-list">
+          ${store.data.orders.length ? store.data.orders.slice(0, 10).map(o => `
+            <div class="card product-row">
+              <div class="prod-info">
+                <h4>${o.client}</h4>
+                <p>${o.date} • ${o.items.length} поз.</p>
+              </div>
+              <div style="font-weight:700; color:var(--success)">+${o.total.toLocaleString()} ₸</div>
+            </div>
+          `).join('') : '<p class="text-center" style="color:var(--text-scnd)">Нет продаж</p>'}
+        </div>
+      `;
+    },
 
-  if (!name || price < 0) return alert("Please enter valid name and price");
+    pos(container) {
+      container.innerHTML = `
+        <h2 class="page-title">Касса</h2>
+        <div class="pos-grid">
+          ${store.data.products.map(p => `
+            <div class="pos-item" onclick="app.actions.addToCart(${p.id})">
+              <img src="${p.image || 'https://via.placeholder.com/150/2c2c2e/8e8e93?text=No+Img'}" class="pos-img">
+              <div class="pos-price">${p.price} ₸</div>
+              <div style="font-weight:600; font-size:14px">${p.name}</div>
+              <div style="font-size:12px; color:var(--text-scnd)">Остаток: ∞</div>
+            </div>
+          `).join('')}
+          
+          <div class="pos-item" style="display:flex; align-items:center; justify-content:center; border:2px dashed var(--border)" onclick="app.views.open('products')">
+            <span style="font-size:24px; color:var(--text-scnd)">+</span>
+          </div>
+        </div>
+        
+        <div id="cartBar" class="cart-bar hidden" onclick="app.ui.showCartModal()">
+          <span style="font-weight:600"><span id="cartCount">0</span> тов.</span>
+          <span style="font-weight:700">Итог: <span id="cartTotal">0</span> ₸</span>
+        </div>
+      `;
+      app.ui.updateCartUI();
+    },
 
-  state.products.push({ name, price });
-  localStorage.setItem("products", JSON.stringify(state.products));
-  openProducts(); // Refresh
-}
+    products(container) {
+      const list = store.data.products.length ? store.data.products.map(p => `
+        <div class="product-row">
+          <div class="flex items-center gap-10">
+            <img src="${p.image || 'https://via.placeholder.com/50/2c2c2e/8e8e93?text='}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
+            <div class="prod-info">
+              <h4>${p.name}</h4>
+              <p>${p.price.toLocaleString()} ₸</p>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="app.actions.deleteProduct(${p.id})">✕</button>
+        </div>
+      `).join('') : '<p class="text-center" style="margin-top:40px; color:var(--text-scnd)">Склад пуст</p>';
 
-function deleteProduct(index) {
-  if (!confirm("Delete this product?")) return;
-  state.products.splice(index, 1);
-  localStorage.setItem("products", JSON.stringify(state.products));
-  openProducts();
-}
+      container.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="page-title" style="margin:0">Склад</h2>
+          <button class="btn btn-sm btn-primary" onclick="app.ui.showAddProductModal()">+ Товар</button>
+        </div>
+        <div class="card">
+          ${list}
+        </div>
+      `;
+    }
+  },
 
-// ===============================
-// CREATE ORDER
-// ===============================
-function openCreate() {
-  state.order = [];
+  ui: {
+    showModal(title, html) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalBody').innerHTML = html;
+      document.getElementById('modalOverlay').classList.remove('hidden');
+    },
 
-  // Product Select Options
-  const productOptions = state.products.length > 0
-    ? `<option value="">Select a product...</option>` +
-    state.products.map(p => `<option value="${p.name}::${p.price}">${p.name} - ${p.price}</option>`).join("")
-    : `<option value="">No products in catalog</option>`;
+    closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+    },
 
-  view(`
-    <h2>New Order</h2>
+    showAddProductModal() {
+      this.showModal('Новый товар', `
+        <input id="newProdName" placeholder="Название товара">
+        <input id="newProdPrice" type="number" placeholder="Цена продажи">
+        <input id="newProdImg" placeholder="Ссылка на фото (необяз.)">
+        <button class="btn btn-primary" onclick="app.actions.submitNewProduct()">Сохранить</button>
+      `);
+    },
 
-    <div class="card">
-      <input id="clientName" placeholder="Client Name (Optional)">
-      <select id="productSelect" onchange="addToOrderFromSelect(this)">
-        ${productOptions}
-      </select>
-      <p style="font-size:12px; text-align:center; margin-top:-10px">Select to add automatically</p>
-    </div>
+    showCartModal() {
+      const total = store.data.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const itemsHtml = store.data.cart.map((item, idx) => `
+        <div class="product-row">
+           <div class="prod-info">
+             <h4>${item.name}</h4>
+             <p>${item.price} ₸ x ${item.qty}</p>
+           </div>
+           <div class="flex items-center gap-10">
+              <button class="btn btn-sm" onclick="app.actions.updateCartQty(${idx}, -1)">-</button>
+              <span>${item.qty}</span>
+              <button class="btn btn-sm" onclick="app.actions.updateCartQty(${idx}, 1)">+</button>
+           </div>
+        </div>
+      `).join('');
 
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="col-name">Item</th>
-            <th class="col-qty">Qty</th>
-            <th class="col-price">Price</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="orderTable"></tbody>
-      </table>
-      <p id="total">Total: 0</p>
-    </div>
+      this.showModal('Корзина', `
+        <div style="margin-bottom:20px">${itemsHtml}</div>
+        <div class="flex justify-between" style="font-size:18px; font-weight:700; margin-bottom:20px; border-top:1px solid var(--border); padding-top:10px;">
+          <span>Итого:</span>
+          <span>${total.toLocaleString()} ₸</span>
+        </div>
+        <input id="clientName" placeholder="Имя клиента (необяз.)">
+        <button class="btn btn-primary" onclick="app.actions.checkout()">✅ Провести продажу</button>
+      `);
+    },
 
-    <button class="primary" onclick="saveOrder()">💾 Save Order</button>
-  `, 'create');
+    updateCartUI() {
+      const count = store.data.cart.reduce((acc, i) => acc + i.qty, 0);
+      const total = store.data.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const bar = document.getElementById('cartBar');
 
-  renderOrder();
-}
+      if (bar) {
+        if (count > 0) {
+          bar.classList.remove('hidden');
+          document.getElementById('cartCount').innerText = count;
+          document.getElementById('cartTotal').innerText = total.toLocaleString();
+        } else {
+          bar.classList.add('hidden');
+        }
+      }
+    }
+  },
 
-function addToOrderFromSelect(selectEl) {
-  const val = selectEl.value;
-  if (!val) return;
+  actions: {
+    submitNewProduct() {
+      const name = document.getElementById('newProdName').value;
+      const price = +document.getElementById('newProdPrice').value;
+      const image = document.getElementById('newProdImg').value; // Optional
 
-  const [name, price] = val.split("::");
-  state.order.push({
-    name,
-    qty: 1,
-    price: +price || 0
-  });
+      if (!name || !price) return alert('Введите название и цену');
 
-  selectEl.value = ""; // Reset select
-  renderOrder();
-}
+      store.addProduct({ name, price, image });
+      app.ui.closeModal();
+      app.views.open('products'); // Refresh
+    },
 
-function removeProduct(index) {
-  state.order.splice(index, 1);
-  renderOrder();
-}
+    deleteProduct(id) {
+      if (confirm('Удалить товар?')) {
+        store.deleteProduct(id);
+        app.views.open('products');
+      }
+    },
 
-function renderOrder() {
-  let total = 0;
-  const tbody = document.getElementById("orderTable");
+    addToCart(id) {
+      const product = store.data.products.find(p => p.id === id);
+      if (!product) return;
 
-  if (state.order.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px">Cart is empty</td></tr>`;
-    document.getElementById("total").innerText = "Total: 0";
-    return;
+      // Haptic feedback
+      Telegram.WebApp.HapticFeedback.impactOccurred('light');
+
+      const existing = store.data.cart.find(i => i.id === id);
+      if (existing) {
+        existing.qty++;
+      } else {
+        store.data.cart.push({ ...product, qty: 1 });
+      }
+      app.ui.updateCartUI();
+    },
+
+    updateCartQty(idx, change) {
+      const item = store.data.cart[idx];
+      item.qty += change;
+      if (item.qty <= 0) store.data.cart.splice(idx, 1);
+
+      app.ui.updateCartUI();
+      // Re-render modal is handled by closing/reopening or we need reactive render
+      // For simplicity, we just close modal if empty or refresh content manually
+      // Here we just close to force re-open for simple state mgmt
+      app.ui.closeModal();
+      if (store.data.cart.length > 0) app.ui.showCartModal();
+    },
+
+    checkout() {
+      const client = document.getElementById('clientName').value;
+      if (store.createOrder(client)) {
+        Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        app.ui.closeModal();
+        app.views.open('dashboard');
+      }
+    }
   }
+};
 
-  tbody.innerHTML = state.order.map((item, index) => {
-    total += item.qty * item.price;
-    return `
-      <tr>
-        <td class="col-name">${item.name}</td>
-        <td class="col-qty">
-          <input type="number" value="${item.qty}" min="1"
-            onchange="state.order[${index}].qty = +this.value; renderOrder()">
-        </td>
-        <td class="col-price">
-          <input type="number" value="${item.price}" min="0"
-            onchange="state.order[${index}].price = +this.value; renderOrder()">
-        </td>
-        <td>
-           <button class="action-btn" onclick="removeProduct(${index})">✕</button>
-        </td>
-      </tr>
-    `;
-  }).join("");
-
-  document.getElementById("total").innerText = "Total: " + total.toLocaleString();
-}
-
-function saveOrder() {
-  if (state.order.length === 0) return alert("Order is empty!");
-
-  const client = document.getElementById("clientName").value.trim() || "Unknown Client";
-  const total = state.order.reduce((acc, i) => acc + (i.qty * i.price), 0);
-
-  const order = {
-    id: Date.now(),
-    date: new Date().toLocaleString(),
-    timestamp: Date.now(),
-    client,
-    items: state.order,
-    total,
-    admin: state.admin
-  };
-
-  state.history.unshift(order); // Add to top
-  localStorage.setItem("history", JSON.stringify(state.history));
-  alert("Order Saved!");
-  openHistory();
-}
-
-// ===============================
-// HISTORY & ANALYTICS
-// ===============================
-function openHistory() {
-  const historyHtml = state.history.length > 0
-    ? state.history.map(o => `
-        <div class="card history-item">
-          <div>
-            <div class="history-date">${o.date}</div>
-            <strong>${o.client}</strong>
-            <div style="font-size:12px; margin-top:4px">${o.items.length} items (${o.items.map(i => i.name).join(", ")})</div>
-          </div>
-          <div class="history-total">
-            ${o.total.toLocaleString()}
-          </div>
-        </div>
-      `).join("")
-    : `<p style="text-align:center">No history yet.</p>`;
-
-  view(`
-    <h2>History</h2>
-    <div style="display:flex; gap:10px; margin-bottom:15px">
-      <button class="primary" style="padding:10px; font-size:14px" onclick="exportHistory()">📤 Export CSV</button>
-      <button class="primary" style="padding:10px; font-size:14px; background:var(--danger-color)" onclick="clearHistory()">🗑 Clear</button>
-    </div>
-    ${historyHtml}
-  `, 'history');
-}
-
-function exportHistory() {
-  if (state.history.length === 0) return alert("Nothing to export");
-
-  let csv = "Date,Client,Items,Total,Admin\n";
-  state.history.forEach(o => {
-    const itemsStr = o.items.map(i => `${i.name}(x${i.qty})`).join("; ");
-    csv += `${o.date},${o.client},"${itemsStr}",${o.total},${o.admin}\n`;
-  });
-
-  navigator.clipboard.writeText(csv).then(() => {
-    alert("History copied to clipboard as CSV!");
-  });
-}
-
-function clearHistory() {
-  if (!confirm("Are you sure? This cannot be undone.")) return;
-  state.history = [];
-  localStorage.setItem("history", "[]");
-  openHistory();
-}
-
-// ===============================
-// INITIALIZATION
-// ===============================
-// Start at home
-openHome();
+// Start
+app.init();
