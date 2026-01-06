@@ -36,6 +36,18 @@ const app = {
 
   init() {
     this.render.home();
+
+    // Hide keyboard on outside click
+    document.body.onclick = (e) => {
+      if (e.target.tagName !== 'INPUT' && !e.target.classList.contains('ac-item')) {
+        document.activeElement.blur();
+      }
+    };
+
+    // Hide keyboard on Enter
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.activeElement.blur();
+    });
   },
 
   // --- VIEWS ---
