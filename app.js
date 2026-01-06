@@ -122,36 +122,77 @@ const app = {
       return app.state.currentOrder.items.reduce((acc, i) => acc + (i.qty * i.price), 0);
     },
 
-    async saveAndPrint() {
+    printCurrent() {
+      const { client, items } = app.state.currentOrder;
+      if (items.length === 0) return alert("Пустой заказ!");
+
+      const draftOrder = {
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        client: client || "Без клиента",
+        items: [...items],
+        total: this.calculateTotal()
+      };
+
+      app.render.receipt(draftOrder);
+      setTimeout(() => window.print(), 300);
+    },
+
+    save() {
       const { client, items } = app.state.currentOrder;
       if (!client) return alert("Выберите клиента!");
       if (items.length === 0) return alert("Добавьте товары!");
 
       const total = this.calculateTotal();
-      const order = {
-        id: Date.now(),
-        date: new Date().toLocaleString(),
-        client,
-        items: [...items],
-        total,
-        synced: false // Pending 1C sync
-      };
 
-      // 1. Save Local
-      app.state.history.unshift(order);
+      if (app.state.currentOrder.id) {
+        // Edit existing
+        const index = app.state.history.findIndex(o => o.id === app.state.currentOrder.id);
+        if (index !== -1) {
+          app.state.history[index] = {
+            ...app.state.history[index],
+            client, items, total, date: new Date().toLocaleString()
+          };
+        }
+      } else {
+        // Create new
+        const order = {
+          id: Date.now(),
+          date: new Date().toLocaleString(),
+          client,
+          items: [...items],
+          total,
+          synced: false
+        };
+        app.state.history.unshift(order);
+      }
+
       localStorage.setItem('orderHistory', JSON.stringify(app.state.history));
-
-      // 2. Mock 1C Sync
-      console.log("Sending to 1C API...", order);
-      // await fetch('https://api.1c-server.uz/orders', { method: 'POST', body: JSON.stringify(order) })
-
-      // 3. Print
-      app.render.receipt(order);
-      setTimeout(() => window.print(), 500);
-
-      // 4. Close
       app.ui.closeOrder();
       app.views.home();
+      alert("Сохранено!");
+    },
+
+    edit(id) {
+      const order = app.state.history.find(o => o.id === id);
+      if (!order) return;
+
+      app.state.currentOrder = {
+        id: order.id,
+        client: order.client,
+        items: JSON.parse(JSON.stringify(order.items))
+      };
+
+      document.getElementById('clientSearch').value = order.client;
+      app.render.orderTable();
+      document.getElementById('orderModal').classList.remove('hidden');
+    },
+
+    printHistory(id) {
+      const order = app.state.history.find(o => o.id === id);
+      if (!order) return;
+      app.render.receipt(order);
+      setTimeout(() => window.print(), 300);
     }
   },
 
