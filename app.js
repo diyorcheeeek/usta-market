@@ -1,309 +1,284 @@
 // ===============================
-// CORE: STATE & STORAGE
+// APP CONFIG & MOCK DATA (1C)
 // ===============================
-const store = {
-  data: {
-    products: JSON.parse(localStorage.getItem('products') || '[]'),
-    orders: JSON.parse(localStorage.getItem('orders') || '[]'),
-    cart: [],
-    user: Telegram.WebApp.initDataUnsafe?.user?.first_name || 'Владелец'
-  },
-
-  save() {
-    localStorage.setItem('products', JSON.stringify(this.data.products));
-    localStorage.setItem('orders', JSON.stringify(this.data.orders));
-  },
-
-  addProduct(product) {
-    this.data.products.push({ ...product, id: Date.now() });
-    this.save();
-  },
-
-  deleteProduct(id) {
-    this.data.products = this.data.products.filter(p => p.id !== id);
-    this.save();
-  },
-
-  createOrder(clientName) {
-    if (this.data.cart.length === 0) return false;
-
-    const total = this.data.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-    const order = {
-      id: Date.now(),
-      date: new Date().toLocaleString('ru-RU'),
-      timestamp: Date.now(),
-      client: clientName || 'Клиент',
-      items: [...this.data.cart],
-      total: total
-    };
-
-    this.data.orders.unshift(order);
-    this.data.cart = []; // Clear cart
-    this.save();
-    return true;
-  }
+const mockData = {
+  // Simulating 1C Clients
+  clients: [
+    "Алишер Строй", "Акбар Оптовик", "Бехруз Маркет",
+    "Восит Продукты", "Гранд Отель", "Дильшод Ресторан",
+    "Евромаркет", "Зафар Кафе", "Ирода Магазин"
+  ],
+  // Simulating 1C Products
+  products: [
+    { name: "Кока-Кола 1.5Л", price: 12000 },
+    { name: "Фанта 1.5Л", price: 12000 },
+    { name: "Спрайт 1.5Л", price: 12000 },
+    { name: "Вода 1Л", price: 3000 },
+    { name: "Вода 5Л", price: 10000 },
+    { name: "Чай Липтон", price: 8000 },
+    { name: "Сок Добрый 1Л", price: 15000 },
+    { name: "Нескафе Классик", price: 45000 },
+    { name: "Шоколад Сникерс", price: 8000 }
+  ]
 };
 
 // ===============================
-// UI: VIEWS & COMPONENTS
+// CORE LOGIC
 // ===============================
 const app = {
+  state: {
+    currentOrder: {
+      client: '',
+      items: [], // { name, qty, price }
+    },
+    history: JSON.parse(localStorage.getItem('orderHistory') || '[]')
+  },
+
   init() {
-    document.getElementById('adminName').textContent = store.data.user;
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-
-    // Initial Render
-    this.views.open('dashboard');
-    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
+    this.render.home();
   },
 
+  // --- VIEWS ---
   views: {
-    active: '',
-
-    open(viewName) {
-      if (this.active === viewName && viewName !== 'products') return; // Allow products refresh
-      this.active = viewName;
-
-      // Update Nav
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.target === viewName);
-      });
-
-      // Render Content
-      const container = document.getElementById('app');
-      container.innerHTML = ''; // Clear previous
-
-      switch (viewName) {
-        case 'dashboard': app.render.dashboard(container); break;
-        case 'pos': app.render.pos(container); break;
-        case 'products': app.render.products(container); break;
-      }
+    home() {
+      app.render.home();
+    },
+    history() {
+      app.render.history();
     }
   },
 
-  render: {
-    dashboard(container) {
-      // Analytics
-      const today = new Date().toDateString();
-      const todayOrders = store.data.orders.filter(o => new Date(o.timestamp).toDateString() === today);
-      const todayRevenue = todayOrders.reduce((acc, o) => acc + o.total, 0);
-      const totalRevenue = store.data.orders.reduce((acc, o) => acc + o.total, 0);
-
-      // Update header total
-      document.getElementById('headerTotal').innerText = `${totalRevenue.toLocaleString()} ₸`;
-
-      container.innerHTML = `
-        <h2 class="page-title">Сводка</h2>
-        
-        <div class="card">
-          <h3 style="margin-top:0">Сегодня</h3>
-          <div class="stat-grid">
-            <div class="stat-item">
-              <span class="stat-val" style="color:var(--success)">${todayRevenue.toLocaleString()} ₸</span>
-              <span class="stat-label">Выручка</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-val">${todayOrders.length}</span>
-              <span class="stat-label">Продаж</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center" style="margin: 20px 0 10px 0;">
-          <h3 style="margin:0">Последние чеки</h3>
-          <button class="btn btn-sm" onclick="app.views.open('pos')" style="background:var(--bg-elevated)">+ Новый</button>
-        </div>
-
-        <div class="history-list">
-          ${store.data.orders.length ? store.data.orders.slice(0, 10).map(o => `
-            <div class="card product-row">
-              <div class="prod-info">
-                <h4>${o.client}</h4>
-                <p>${o.date} • ${o.items.length} поз.</p>
-              </div>
-              <div style="font-weight:700; color:var(--success)">+${o.total.toLocaleString()} ₸</div>
-            </div>
-          `).join('') : '<p class="text-center" style="color:var(--text-scnd)">Нет продаж</p>'}
-        </div>
-      `;
-    },
-
-    pos(container) {
-      container.innerHTML = `
-        <h2 class="page-title">Касса</h2>
-        <div class="pos-grid">
-          ${store.data.products.map(p => `
-            <div class="pos-item" onclick="app.actions.addToCart(${p.id})">
-              <img src="${p.image || 'https://via.placeholder.com/150/2c2c2e/8e8e93?text=No+Img'}" class="pos-img">
-              <div class="pos-price">${p.price} ₸</div>
-              <div style="font-weight:600; font-size:14px">${p.name}</div>
-              <div style="font-size:12px; color:var(--text-scnd)">Остаток: ∞</div>
-            </div>
-          `).join('')}
-          
-          <div class="pos-item" style="display:flex; align-items:center; justify-content:center; border:2px dashed var(--border)" onclick="app.views.open('products')">
-            <span style="font-size:24px; color:var(--text-scnd)">+</span>
-          </div>
-        </div>
-        
-        <div id="cartBar" class="cart-bar hidden" onclick="app.ui.showCartModal()">
-          <span style="font-weight:600"><span id="cartCount">0</span> тов.</span>
-          <span style="font-weight:700">Итог: <span id="cartTotal">0</span> ₸</span>
-        </div>
-      `;
-      app.ui.updateCartUI();
-    },
-
-    products(container) {
-      const list = store.data.products.length ? store.data.products.map(p => `
-        <div class="product-row">
-          <div class="flex items-center gap-10">
-            <img src="${p.image || 'https://via.placeholder.com/50/2c2c2e/8e8e93?text='}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
-            <div class="prod-info">
-              <h4>${p.name}</h4>
-              <p>${p.price.toLocaleString()} ₸</p>
-            </div>
-          </div>
-          <button class="btn btn-sm btn-danger" onclick="app.actions.deleteProduct(${p.id})">✕</button>
-        </div>
-      `).join('') : '<p class="text-center" style="margin-top:40px; color:var(--text-scnd)">Склад пуст</p>';
-
-      container.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="page-title" style="margin:0">Склад</h2>
-          <button class="btn btn-sm btn-primary" onclick="app.ui.showAddProductModal()">+ Товар</button>
-        </div>
-        <div class="card">
-          ${list}
-        </div>
-      `;
-    }
-  },
-
+  // --- UI ACTIONS ---
   ui: {
-    showModal(title, html) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalBody').innerHTML = html;
-      document.getElementById('modalOverlay').classList.remove('hidden');
+    openNewOrder() {
+      // Reset State
+      app.state.currentOrder = { client: '', items: [] };
+      document.getElementById('clientSearch').value = '';
+      document.getElementById('productSearch').value = '';
+      app.render.orderTable();
+      document.getElementById('orderModal').classList.remove('hidden');
     },
 
-    closeModal() {
-      document.getElementById('modalOverlay').classList.add('hidden');
-    },
-
-    showAddProductModal() {
-      this.showModal('Новый товар', `
-        <input id="newProdName" placeholder="Название товара">
-        <input id="newProdPrice" type="number" placeholder="Цена продажи">
-        <input id="newProdImg" placeholder="Ссылка на фото (необяз.)">
-        <button class="btn btn-primary" onclick="app.actions.submitNewProduct()">Сохранить</button>
-      `);
-    },
-
-    showCartModal() {
-      const total = store.data.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-      const itemsHtml = store.data.cart.map((item, idx) => `
-        <div class="product-row">
-           <div class="prod-info">
-             <h4>${item.name}</h4>
-             <p>${item.price} ₸ x ${item.qty}</p>
-           </div>
-           <div class="flex items-center gap-10">
-              <button class="btn btn-sm" onclick="app.actions.updateCartQty(${idx}, -1)">-</button>
-              <span>${item.qty}</span>
-              <button class="btn btn-sm" onclick="app.actions.updateCartQty(${idx}, 1)">+</button>
-           </div>
-        </div>
-      `).join('');
-
-      this.showModal('Корзина', `
-        <div style="margin-bottom:20px">${itemsHtml}</div>
-        <div class="flex justify-between" style="font-size:18px; font-weight:700; margin-bottom:20px; border-top:1px solid var(--border); padding-top:10px;">
-          <span>Итого:</span>
-          <span>${total.toLocaleString()} ₸</span>
-        </div>
-        <input id="clientName" placeholder="Имя клиента (необяз.)">
-        <button class="btn btn-primary" onclick="app.actions.checkout()">✅ Провести продажу</button>
-      `);
-    },
-
-    updateCartUI() {
-      const count = store.data.cart.reduce((acc, i) => acc + i.qty, 0);
-      const total = store.data.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-      const bar = document.getElementById('cartBar');
-
-      if (bar) {
-        if (count > 0) {
-          bar.classList.remove('hidden');
-          document.getElementById('cartCount').innerText = count;
-          document.getElementById('cartTotal').innerText = total.toLocaleString();
-        } else {
-          bar.classList.add('hidden');
-        }
-      }
+    closeOrder() {
+      if (app.state.currentOrder.items.length > 0 && !confirm("Закрыть без сохранения?")) return;
+      document.getElementById('orderModal').classList.add('hidden');
     }
   },
 
-  actions: {
-    submitNewProduct() {
-      const name = document.getElementById('newProdName').value;
-      const price = +document.getElementById('newProdPrice').value;
-      const image = document.getElementById('newProdImg').value; // Optional
+  // --- SEARCH ENGINE ---
+  search: {
+    client(query) {
+      if (!query) return app.render.hideAutocomplete('clientResults');
 
-      if (!name || !price) return alert('Введите название и цену');
-
-      store.addProduct({ name, price, image });
-      app.ui.closeModal();
-      app.views.open('products'); // Refresh
+      const matches = mockData.clients.filter(c => c.toLowerCase().includes(query.toLowerCase()));
+      app.render.autocomplete('clientResults', matches.map(c => ({ label: c, value: c })), (val) => {
+        app.state.currentOrder.client = val;
+        document.getElementById('clientSearch').value = val;
+        app.render.hideAutocomplete('clientResults');
+      });
     },
 
-    deleteProduct(id) {
-      if (confirm('Удалить товар?')) {
-        store.deleteProduct(id);
-        app.views.open('products');
-      }
-    },
+    product(query) {
+      if (!query) return app.render.hideAutocomplete('productResults');
 
-    addToCart(id) {
-      const product = store.data.products.find(p => p.id === id);
-      if (!product) return;
+      const matches = mockData.products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+      app.render.autocomplete('productResults', matches.map(p => ({ label: `${p.name} - ${p.price}`, value: p })), (product) => {
+        app.order.addItem(product);
+        document.getElementById('productSearch').value = '';
+        app.render.hideAutocomplete('productResults');
+      });
+    }
+  },
 
-      // Haptic feedback
-      Telegram.WebApp.HapticFeedback.impactOccurred('light');
-
-      const existing = store.data.cart.find(i => i.id === id);
+  // --- ORDER LOGIC ---
+  order: {
+    addItem(product) {
+      const existing = app.state.currentOrder.items.find(i => i.name === product.name);
       if (existing) {
         existing.qty++;
       } else {
-        store.data.cart.push({ ...product, qty: 1 });
+        app.state.currentOrder.items.push({
+          name: product.name,
+          price: product.price,
+          qty: 1
+        });
       }
-      app.ui.updateCartUI();
+      app.render.orderTable();
     },
 
-    updateCartQty(idx, change) {
-      const item = store.data.cart[idx];
-      item.qty += change;
-      if (item.qty <= 0) store.data.cart.splice(idx, 1);
-
-      app.ui.updateCartUI();
-      // Re-render modal is handled by closing/reopening or we need reactive render
-      // For simplicity, we just close modal if empty or refresh content manually
-      // Here we just close to force re-open for simple state mgmt
-      app.ui.closeModal();
-      if (store.data.cart.length > 0) app.ui.showCartModal();
+    updateItem(index, field, value) {
+      const item = app.state.currentOrder.items[index];
+      if (field === 'qty') item.qty = Number(value);
+      if (field === 'price') item.price = Number(value);
+      app.render.orderTable();
     },
 
-    checkout() {
-      const client = document.getElementById('clientName').value;
-      if (store.createOrder(client)) {
-        Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-        app.ui.closeModal();
-        app.views.open('dashboard');
+    removeItem(index) {
+      app.state.currentOrder.items.splice(index, 1);
+      app.render.orderTable();
+    },
+
+    calculateTotal() {
+      return app.state.currentOrder.items.reduce((acc, i) => acc + (i.qty * i.price), 0);
+    },
+
+    async saveAndPrint() {
+      const { client, items } = app.state.currentOrder;
+      if (!client) return alert("Выберите клиента!");
+      if (items.length === 0) return alert("Добавьте товары!");
+
+      const total = this.calculateTotal();
+      const order = {
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        client,
+        items: [...items],
+        total,
+        synced: false // Pending 1C sync
+      };
+
+      // 1. Save Local
+      app.state.history.unshift(order);
+      localStorage.setItem('orderHistory', JSON.stringify(app.state.history));
+
+      // 2. Mock 1C Sync
+      console.log("Sending to 1C API...", order);
+      // await fetch('https://api.1c-server.uz/orders', { method: 'POST', body: JSON.stringify(order) })
+
+      // 3. Print
+      app.render.receipt(order);
+      setTimeout(() => window.print(), 500);
+
+      // 4. Close
+      app.ui.closeOrder();
+      app.views.home();
+    }
+  },
+
+  // --- RENDERERS ---
+  render: {
+    autocomplete(elementId, items, onSelect) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = items.map((i, idx) => `
+        <div class="ac-item" data-idx="${idx}">${i.label}</div>
+      `).join('');
+      el.classList.remove('hidden');
+
+      // Event delegation
+      el.onclick = (e) => {
+        if (e.target.classList.contains('ac-item')) {
+          onSelect(items[e.target.dataset.idx].value);
+        }
+      };
+    },
+
+    hideAutocomplete(elementId) {
+      document.getElementById(elementId).classList.add('hidden');
+    },
+
+    orderTable() {
+      const tbody = document.getElementById('orderTableBody');
+      const items = app.state.currentOrder.items;
+
+      if (items.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('emptyState').classList.remove('hidden');
+        document.getElementById('orderTotal').innerText = "0 UZS";
+        return;
       }
+
+      document.getElementById('emptyState').classList.add('hidden');
+
+      tbody.innerHTML = items.map((item, i) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>
+            <input class="qty-input" type="number" value="${item.qty}" onchange="app.order.updateItem(${i}, 'qty', this.value)">
+          </td>
+          <td>
+            <input class="price-input" type="number" value="${item.price}" onchange="app.order.updateItem(${i}, 'price', this.value)">
+          </td>
+          <td>
+            <span onclick="app.order.removeItem(${i})" style="color:red; cursor:pointer">✕</span>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('orderTotal').innerText = app.order.calculateTotal().toLocaleString() + ' UZS';
+    },
+
+    receipt(order) {
+      const container = document.getElementById('receipt-container');
+      const itemsRows = order.items.map(i => `
+        <tr>
+          <td>${i.name}</td>
+          <td style="text-align:right">${i.qty} x ${i.price}</td>
+          <td style="text-align:right">${(i.qty * i.price).toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="receipt-header">
+          <div class="receipt-title">ЧЕК ПРОДАЖИ</div>
+          <div class="receipt-info">${order.date}</div>
+          <div class="receipt-info">Клиент: ${order.client}</div>
+        </div>
+        <table class="receipt-table">
+          <thead>
+             <tr><th>Твр</th> <th style="text-align:right">К/Ц</th> <th style="text-align:right">Сум</th></tr>
+          </thead>
+          <tbody>
+            ${itemsRows}
+          </tbody>
+        </table>
+        <div class="receipt-footer">
+          ИТОГО: ${order.total.toLocaleString()} UZS
+        </div>
+        <div style="text-align:center; font-size:10px; margin-top:10px;">
+          Спасибо за покупку!
+        </div>
+      `;
+    },
+
+    home() {
+      const container = document.getElementById('view-container');
+      const lastOrder = app.state.history[0];
+
+      const summaryHtml = lastOrder ? `
+         <div class="card">
+           <h3 style="margin-top:0">Последняя продажа</h3>
+           <div class="flex-between">
+             <span>${lastOrder.client}</span>
+             <span style="font-weight:bold; color:var(--success)">${lastOrder.total.toLocaleString()} UZS</span>
+           </div>
+           <div style="font-size:12px; color:#888; margin-top:5px">${lastOrder.date}</div>
+         </div>
+      ` : `<div style="text-align:center; color:#888; margin-top:20px">Нет продаж сегодня</div>`;
+
+      container.innerHTML = `
+        <h2 style="margin-top:0">Главная</h2>
+        ${summaryHtml}
+        <div style="margin-top:20px; font-size:14px; color:#666">
+          Нажмите <span style="font-weight:bold; color:var(--primary)">+</span> чтобы создать новый заказ.
+        </div>
+      `;
+    },
+
+    history() {
+      const container = document.getElementById('view-container');
+      const list = app.state.history.map(o => `
+        <div class="card">
+          <div class="flex-between">
+            <strong>${o.client}</strong>
+            <span style="color:var(--success)">${o.total.toLocaleString()}</span>
+          </div>
+          <div style="font-size:12px; color:#888">${o.date} • ${o.items.length} поз.</div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `<h2>История</h2>${list || 'Пусто'}`;
     }
   }
 };
 
-// Start
 app.init();
