@@ -27,10 +27,33 @@
       <div id="syncStatus" class="status-badge success">● Связь с 1С</div>
     </header>
 
-    <!-- MAIN VIEW -->
-    <main id="view-container">
-      <!-- Views injected by JS -->
-    </main>
+    <!-- SETTINGS / SYNC VIEW -->
+    <div id="settings-view" class="view hidden">
+      <div class="card">
+        <h3>📂 Обмен с 1С (Файлы)</h3>
+
+        <div class="form-group">
+          <label>1. Загрузить Клиентов (JSON/CSV)</label>
+          <input type="file" id="importClients" accept=".json,.csv" onchange="app.sync.importClients(this)">
+        </div>
+
+        <div class="form-group">
+          <label>2. Загрузить Товары (JSON/CSV)</label>
+          <input type="file" id="importProducts" accept=".json,.csv" onchange="app.sync.importProducts(this)">
+        </div>
+
+        <hr style="border:0; border-top:1px solid #333; margin: 20px 0">
+
+        <label>3. Выгрузить Заказы</label>
+        <button class="btn-primary full-width" onclick="app.sync.exportOrders()">📤 Скачать orders.json</button>
+        <p style="font-size:10px; color:#888; margin-top:5px">Отправьте этот файл в 1С</p>
+      </div>
+
+      <div class="card">
+        <button class="btn-secondary full-width" style="color:red; border-color:red"
+          onclick="localStorage.clear(); location.reload()">⚠️ Сброс данных</button>
+      </div>
+    </div>
 
     <!-- NEW ORDER MODAL (Full Screen) -->
     <div id="orderModal" class="modal hidden">
@@ -105,6 +128,11 @@
       <button class="nav-item" onclick="app.views.history()">
         <span>📄</span>
         <span>История</span>
+      </button>
+
+      <button class="nav-item" onclick="app.views.settings()">
+        <span>⚙️</span>
+        <span>Настр.</span>
       </button>
     </nav>
 

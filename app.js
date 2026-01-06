@@ -2,25 +2,18 @@
 // APP CONFIG & MOCK DATA (1C)
 // ===============================
 const mockData = {
-  // Simulating 1C Clients
-  clients: [
-    "Алишер Строй", "Акбар Оптовик", "Бехруз Маркет",
-    "Восит Продукты", "Гранд Отель", "Дильшод Ресторан",
-    "Евромаркет", "Зафар Кафе", "Ирода Магазин"
-  ],
-  // Simulating 1C Products
-  products: [
-    { name: "Кока-Кола 1.5Л", price: 12000 },
-    { name: "Фанта 1.5Л", price: 12000 },
-    { name: "Спрайт 1.5Л", price: 12000 },
-    { name: "Вода 1Л", price: 3000 },
-    { name: "Вода 5Л", price: 10000 },
-    { name: "Чай Липтон", price: 8000 },
-    { name: "Сок Добрый 1Л", price: 15000 },
-    { name: "Нескафе Классик", price: 45000 },
-    { name: "Шоколад Сникерс", price: 8000 }
-  ]
+  // Try to load from local storage first, else defaults
+  clients: JSON.parse(localStorage.getItem('db_clients') || '[]'),
+  products: JSON.parse(localStorage.getItem('db_products') || '[]')
 };
+
+// Fallback if empty
+if (mockData.clients.length === 0) {
+  mockData.clients = ["Тест Клиент 1", "Тест Клиент 2"];
+}
+if (mockData.products.length === 0) {
+  mockData.products = [{ name: "Тест Товар", price: 1000 }];
+}
 
 // ===============================
 // CORE LOGIC
@@ -57,6 +50,9 @@ const app = {
     },
     history() {
       app.render.history();
+    },
+    settings() {
+      app.render.settings();
     }
   },
 
@@ -365,6 +361,67 @@ const app = {
       `).join('');
 
       container.innerHTML = `<h2>История</h2>${list || 'Пусто'}`;
+    },
+
+    settings() {
+      document.getElementById('view-container').innerHTML = '';
+      // Move Settings view into container
+      const settingsHtml = document.getElementById('settings-view').innerHTML;
+      document.getElementById('view-container').innerHTML = `<h2>Настройки</h2>${settingsHtml}`;
+    }
+  },
+
+  // --- SYNC ENGINE ---
+  sync: {
+    importClients(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const json = JSON.parse(e.target.result);
+          if (!Array.isArray(json)) throw new Error("Неверный формат");
+          mockData.clients = json;
+          localStorage.setItem('db_clients', JSON.stringify(json));
+          alert(`Загружено ${json.length} клиентов!`);
+        } catch (err) {
+          alert("Ошибка чтения файла! Нужен JSON массив.");
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    importProducts(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const json = JSON.parse(e.target.result);
+          if (!Array.isArray(json)) throw new Error("Неверный формат");
+          mockData.products = json;
+          localStorage.setItem('db_products', JSON.stringify(json));
+          alert(`Загружено ${json.length} товаров!`);
+        } catch (err) {
+          alert("Ошибка чтения файла! Нужен JSON массив.");
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    exportOrders() {
+      const orders = app.state.history;
+      if (orders.length === 0) return alert("Нет заказов для выгрузки");
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(orders));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "orders_" + Date.now() + ".json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
     }
   }
 };
