@@ -260,8 +260,40 @@ const app = {
       document.getElementById('orderTotal').innerText = app.order.calculateTotal().toLocaleString() + ' UZS';
     },
 
-    receipt(order) {
-      const container = document.getElementById('receipt-container');
+    openPrintWindow(order) {
+      const receiptHtml = this.generateReceiptHtml(order);
+      const win = window.open('', '', 'width=350,height=600');
+
+      if (!win) return alert("Разрешите всплывающие окна!");
+
+      const styles = `
+        <style>
+          body { font-family: monospace; margin: 0; padding: 10px; color: black; }
+          .receipt-header { text-align: center; margin-bottom: 10px; border-bottom: 1px dashed black; padding-bottom: 5px; }
+          .receipt-title { font-size: 16px; font-weight: bold; }
+          .receipt-info { font-size: 12px; margin-top: 5px; }
+          .receipt-table { width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 10px; }
+          .receipt-table th { text-align: left; border-bottom: 1px solid black; }
+          .receipt-table td { padding: 4px 0; }
+          .receipt-footer { border-top: 1px dashed black; padding-top: 5px; text-align: right; font-weight: bold; font-size: 14px; }
+        </style>
+      `;
+
+      win.document.write('<html><head><title>Чек</title>' + styles + '</head><body>');
+      win.document.write(receiptHtml);
+      win.document.write('</body></html>');
+
+      win.document.close();
+      win.focus();
+
+      // Wait for load then print
+      setTimeout(() => {
+        win.print();
+        // Optional: win.close(); // Keep open or close automatically
+      }, 500);
+    },
+
+    generateReceiptHtml(order) {
       const itemsRows = order.items.map(i => `
         <tr>
           <td>${i.name}</td>
@@ -270,7 +302,7 @@ const app = {
         </tr>
       `).join('');
 
-      container.innerHTML = `
+      return `
         <div class="receipt-header">
           <div class="receipt-title">ЧЕК ПРОДАЖИ</div>
           <div class="receipt-info">${order.date}</div>
