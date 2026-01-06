@@ -146,8 +146,7 @@ const app = {
         total: this.calculateTotal()
       };
 
-      app.render.receipt(draftOrder);
-      setTimeout(() => window.print(), 300);
+      app.render.openPrintWindow(draftOrder);
     },
 
     save() {
@@ -203,8 +202,7 @@ const app = {
     printHistory(id) {
       const order = app.state.history.find(o => o.id === id);
       if (!order) return;
-      app.render.receipt(order);
-      setTimeout(() => window.print(), 300);
+      app.render.openPrintWindow(order);
     }
   },
 
